@@ -3,9 +3,13 @@ osc-tools
 
 OSC (Open Sound Control) libraries and tools written in Java
 
-osc-common (Domain Model of OSC objects with Unit tests based on samples from the source site).
+osc-common 
+-----------
+Domain Model of OSC objects with Unit tests based on samples from the source site.
 
-osc-network (NETTY based client and server components).
+osc-network 
+-----------
+NETTY based client and server components.
 
 osc-router 
 -----------
