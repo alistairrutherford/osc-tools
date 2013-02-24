@@ -7,4 +7,4 @@ osc-common (Domain Model of OSC objects with Unit tests based on samples from th
 
 osc-network (NETTY based client and server components).
 
-osc-router (JavaFX based UI tool which allows you to route OSC messages from endpoint to endpoint [OSC to MIDI currently only supported]. WIP
+osc-router (JavaFX based UI tool which allows you to route OSC messages from endpoint to endpoint [OSC to MIDI currently only supported].THIS IS A WORK INM PROGRESS
