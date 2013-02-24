@@ -11,6 +11,7 @@ public class AppInjector
 {
 	/**
 	 * Guice injector.
+	 * 
 	 */
 	public static Injector injector = Guice.createInjector();
 
