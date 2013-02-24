@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.netthreads.osc</groupId>
+	<artifactId>osc-tools</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>OSC Tools</name>
+	<description>OSC Tools</description>
+	<url>http://www.netthreads.co.uk</url>
+	<inceptionYear>2013</inceptionYear>
+  
+	<licenses>
+		<license>
+		  <name>Apache 2.0</name>
+		  <url>http://www.netthreads.co.uk</url>
+		</license>
+	</licenses>
+  
+	<developers>
+		<developer>
+		<name>Alistair Rutherford</name>
+		<id>arutherford</id>
+		<email>alistair.rutherford@gmail.com</email>
+		<organization>Netthreads</organization>
+		<roles>
+			<role>All</role>
+		</roles>
+		<timezone>0</timezone>
+		</developer>
+	</developers>
+  
+	<organization>
+		<name>netthreads</name>
+	</organization>
+
+	<properties>
+        <svn-server>${home-server}</svn-server>
+        <junit-version>4.5</junit-version>
+	</properties>
+	
+	<scm>
+		<connection>scm:svn:https://${svn-server}/svn/trunk/osc</connection>
+		<developerConnection>scm:svn:https://${svn-server}/svn/trunk/osc</developerConnection>
+		<url>scm:svn:https://${svn-server}/svn/trunk/osc</url>
+	</scm>
+  
+	<modules>
+		<module>../osc-common</module>
+		<module>../osc-network</module>
+		<module>../osc-router</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+				<tagBase>scm:svn:http://${svn-server}/tag/schema-eye</tagBase>
+				</configuration>
+			</plugin>
+		</plugins>
+			
+	</build>
+  
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+  
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>Releases</name>
+			<url>https://${svn-server}/svn/release/osc</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Snapshots</name>
+			<url>https://${svn-server}/svn/snapshot/osc</url>
+		</snapshotRepository>
+	</distributionManagement>
+  
+</project>

@@ -1,0 +1,1 @@
+This package contains a matrix player note model. We can set notes on in an array of matrices and watch the OSC note on/off messages. It is like 'tonematrix' but with multiple panels.

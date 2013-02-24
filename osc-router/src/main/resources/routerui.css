@@ -1,0 +1,8 @@
+.root{
+    -fx-background-color: darkgray;
+}
+
+.workingStatusCell {
+	-fx-alignment : center;
+	-fx-fill-height : true;
+}

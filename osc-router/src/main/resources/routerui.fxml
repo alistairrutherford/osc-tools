@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.000199999995" prefWidth="787.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.netthreads.network.osc.router.controller.OSCRouterFXController">
+  <children>
+    <VBox prefHeight="442.0" prefWidth="502.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="502.0">
+          <children>
+            <Button fx:id="openButton" mnemonicParsing="false" text="">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </Button>
+            <Button fx:id="saveButton" mnemonicParsing="false" text="" HBox.margin="$x1" />
+            <Label text="Port">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </Label>
+            <TextField fx:id="portTextField" prefWidth="127.0">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </TextField>
+            <Button fx:id="activateButton" alignment="CENTER" contentDisplay="CENTER" disable="false" mnemonicParsing="false" onAction="#activateButtonAction">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </Button>
+          </children>
+        </HBox>
+        <SplitPane fx:id="mainSplitPane" dividerPositions="0.5936305732484076" focusTraversable="true" prefHeight="387.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+          <items>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+              <children>
+                <TableView fx:id="dataTable" prefHeight="518.0" prefWidth="421.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <columns>
+                    <TableColumn prefWidth="75.0" text="address" fx:id="Address" />
+                    <TableColumn prefWidth="75.0" text="Working" fx:id="working" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="331.0">
+              <children>
+                <TableView fx:id="valueTable" prefHeight="534.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <columns>
+                    <TableColumn prefWidth="75.0" text="Argument" fx:id="argument" />
+                    <TableColumn prefWidth="75.0" text="Value" fx:id="value" />
+                    <TableColumn prefWidth="75.0" text="Label" fx:id="label" />
+                  </columns>
+                </TableView>
+              </children>
+              <padding>
+                <Insets />
+              </padding>
+            </AnchorPane>
+          </items>
+        </SplitPane>
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>

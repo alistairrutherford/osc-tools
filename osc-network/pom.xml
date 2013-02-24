@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.netthreads.osc</groupId>
+		<artifactId>osc</artifactId>
+		<relativePath>../pom.xml</relativePath>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.netthreads.osc</groupId>
+	<artifactId>osc-network</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>OSC Network</name>
+
+	<properties>
+		<svn-server>home-server</svn-server>
+		<junit-version>4.5</junit-version>
+		<slf4j-version>1.6.6</slf4j-version>
+		<netty-version>4.0.0.Alpha8</netty-version>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-network</connection>
+		<developerConnection>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-network</developerConnection>
+		<url>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-network</url>
+	</scm>
+
+	<build>
+		<finalName>osc-bridge-client</finalName>
+
+		<plugins>
+			<!-- Configure test plugin to ignore certain tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<parallel>none</parallel>
+					<!--<skip>true</skip> -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<downloadSources>false</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+
+					<additionalResources>
+						<resource>src/main/standalone/resources</resource>
+					</additionalResources>
+
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+
+			<!-- Specify tag location for release plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>scm:svn:http://${home-server}/tag/development/java/audio/components/osc/osc-network</tagBase>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<classifier>${project-classifier}</classifier>
+				</configuration>
+			</plugin>
+
+			<!-- Configure assembly plugin to create the test-data zip -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+			<classifier>no_aop</classifier>
+		</dependency>
+
+		<!-- General -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.netthreads.osc</groupId>
+			<artifactId>osc-common</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>${netty-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>
