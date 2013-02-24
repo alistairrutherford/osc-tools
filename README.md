@@ -19,3 +19,4 @@ This is a work in progress. it uses the java-fx-maven plugin from here https://g
 
 You will need to follow the instruction on the plugin page to ensure JavaFX is visible to the build.
 
+![My image](alistairrutherford.github.com/repository/images/oscrouterfx.png)
