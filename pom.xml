@@ -50,9 +50,9 @@
 	</scm>
   
 	<modules>
-		<module>../osc-common</module>
-		<module>../osc-network</module>
-		<module>../osc-router</module>
+		<module>osc-common</module>
+		<module>osc-network</module>
+		<module>osc-router</module>
 	</modules>
 
 	<build>
