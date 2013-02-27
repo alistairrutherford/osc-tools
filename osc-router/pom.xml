@@ -42,7 +42,7 @@
 					<version>1.3</version>
 					<configuration>
 
-						<mainClass>com.netthreads.javafx.mavenize.MavenizeFX</mainClass>
+						<mainClass>com.netthreads.network.osc.router.OSCRouterFX</mainClass>
 
 						<!-- only required if signing the jar file -->
 						<keyStoreAlias>example-user</keyStoreAlias>

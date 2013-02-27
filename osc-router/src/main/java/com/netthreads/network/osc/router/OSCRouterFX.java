@@ -16,7 +16,7 @@ import com.netthreads.network.osc.router.controller.OSCRouterFXController;
 import com.netthreads.network.osc.router.service.OSCService;
 
 /**
- * Mavenize tool GUI.
+ * OSC Router Application.
  * 
  */
 public class OSCRouterFX extends Application
@@ -29,7 +29,9 @@ public class OSCRouterFX extends Application
 	
 	private OSCService oscService;
 	private OSCRouterFXController oscRouterFXController;
-	
+
+	private static int DEFAULT_X = 780;
+	private static int DEFAULT_Y = 400;
 	/**
 	 * Load layout and display.
 	 * 
@@ -73,7 +75,7 @@ public class OSCRouterFX extends Application
 		stage.setTitle(APPLICATION_TITLE);
 		
 		// Scene
-		Scene scene = new Scene(root, 780, 400);
+		Scene scene = new Scene(root, DEFAULT_X, DEFAULT_Y);
 		
 		scene.getStylesheets().addAll(cssURL.toExternalForm());
 		
