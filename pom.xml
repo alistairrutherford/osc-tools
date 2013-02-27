@@ -43,31 +43,12 @@
         <junit-version>4.5</junit-version>
 	</properties>
 	
-	<scm>
-		<connection>scm:svn:https://${svn-server}/svn/trunk/osc</connection>
-		<developerConnection>scm:svn:https://${svn-server}/svn/trunk/osc</developerConnection>
-		<url>scm:svn:https://${svn-server}/svn/trunk/osc</url>
-	</scm>
-  
 	<modules>
 		<module>osc-common</module>
 		<module>osc-network</module>
 		<module>osc-router</module>
 	</modules>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-				<tagBase>scm:svn:http://${svn-server}/tag/schema-eye</tagBase>
-				</configuration>
-			</plugin>
-		</plugins>
-			
-	</build>
-  
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -76,18 +57,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-  
-	<distributionManagement>
-		<repository>
-			<id>central</id>
-			<name>Releases</name>
-			<url>https://${svn-server}/svn/release/osc</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-			<url>https://${svn-server}/svn/snapshot/osc</url>
-		</snapshotRepository>
-	</distributionManagement>
-  
+	
 </project>

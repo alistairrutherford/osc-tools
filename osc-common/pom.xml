@@ -16,29 +16,15 @@
 	<name>OSC Common Library</name>
 
 	<properties>
-		<svn-server>home-server</svn-server>
 		<junit-version>4.5</junit-version>
 		<slf4j-version>1.6.6</slf4j-version>
 		<netty-version>4.0.0.Alpha8</netty-version>
 	</properties>
 
-	<scm>
-		<connection>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-common</connection>
-		<developerConnection>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-common</developerConnection>
-		<url>scm:svn:http://${svn-server}/development/java/audio/components/osc/osc-common</url>
-	</scm>
-
 	<build>
 		<finalName>osc-common</finalName>
 
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>scm:svn:http://${svn-server}/tag/java/audio/components/osc/osc-common</tagBase>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -18,17 +18,10 @@
 	<name>OSC Router FX</name>
 
 	<properties>
-		<svn-server>home-server</svn-server>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit-version>4.5</junit-version>
 		<slf4j-version>1.6.6</slf4j-version>
 	</properties>
-
-	<scm>
-		<connection>scm:svn:https://${svn-server}/svn/trunk/osc-router</connection>
-		<developerConnection>scm:svn:https://${svn-server}/svn/trunk/osc-router</developerConnection>
-		<url>scm:svn:https://${svn-server}/svn/trunk/osc-router</url>
-	</scm>
 
 	<build>
 		<pluginManagement>
@@ -89,18 +82,5 @@
 		</dependency>
 
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>central</id>
-			<name>Releases</name>
-			<url>https://${svn-server}/svn/release/osc-router</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-			<url>https://${svn-server}/svn/snapshot/osc-router</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 </project>
