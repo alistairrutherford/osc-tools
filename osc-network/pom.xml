@@ -23,7 +23,7 @@
 	</properties>
 
 	<build>
-		<finalName>osc-bridge-client</finalName>
+		<finalName>osc-network</finalName>
 
 		<plugins>
 			<!-- Configure test plugin to ignore certain tests -->
