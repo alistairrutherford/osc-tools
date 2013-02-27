@@ -78,9 +78,12 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	}
 	
 	/**
-	 * Mavenize Client
+	 * OSC Service.
 	 * 
 	 * @param observableList
+	 *            Data source.
+	 * @param refreshView
+	 *            View to update.
 	 */
 	public OSCService(ObservableList<OSCItem> observableList, ImplementsRefresh refreshView)
 	{
@@ -284,7 +287,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		
 		MidiDevice midiDevice = midiDeviceCache.get(device);
 		
-		if (midiDevice!=null && midiDevice.isOpen())
+		if (midiDevice != null && midiDevice.isOpen())
 		{
 			// Send message.
 			switch (message)
@@ -294,20 +297,37 @@ public class OSCService extends Service<Void> implements OSCServerListener
 					break;
 				
 				case ShortMessage.NOTE_ON:
-					
-					int noteOn = Integer.valueOf(oscItem.getValues().get(0).getValue());
-					int velocityOn = Integer.valueOf(oscItem.getValues().get(1).getValue());
-					int channelOn = Integer.valueOf(oscItem.getValues().get(2).getValue());
-					
-					sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
+					// Parameter check.
+					List<OSCValue> noteOnValues = oscItem.getValues();
+					if (messageLookup.getParametersCount(routeType) != noteOnValues.size())
+					{
+						oscItem.setWorking(OSCItem.WORKING_ERROR);
+					}
+					else
+					{
+						int noteOn = Integer.valueOf(noteOnValues.get(0).getValue());
+						int velocityOn = Integer.valueOf(noteOnValues.get(1).getValue());
+						int channelOn = Integer.valueOf(noteOnValues.get(2).getValue());
+						
+						sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
+					}
 					break;
 				
 				case ShortMessage.NOTE_OFF:
-					int noteOff = Integer.valueOf(oscItem.getValues().get(0).getValue());
-					int velocityOff = Integer.valueOf(oscItem.getValues().get(1).getValue());
-					int channelOff = Integer.valueOf(oscItem.getValues().get(2).getValue());
-					
-					sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
+					// Parameter check.
+					List<OSCValue> noteOffValues = oscItem.getValues();
+					if (messageLookup.getParametersCount(routeType) != noteOffValues.size())
+					{
+						oscItem.setWorking(OSCItem.WORKING_ERROR);
+					}
+					else
+					{
+						int noteOff = Integer.valueOf(noteOffValues.get(0).getValue());
+						int velocityOff = Integer.valueOf(noteOffValues.get(1).getValue());
+						int channelOff = Integer.valueOf(noteOffValues.get(2).getValue());
+						
+						sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
+					}
 					break;
 				
 				case ShortMessage.POLY_PRESSURE:

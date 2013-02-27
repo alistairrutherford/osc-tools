@@ -20,8 +20,13 @@ public class MIDIMessageLookupImpl implements MIDIMessageLookup
 	        ShortMessage.CONTINUE, ShortMessage.NOTE_ON, ShortMessage.NOTE_OFF, ShortMessage.POLY_PRESSURE, ShortMessage.CHANNEL_PRESSURE, ShortMessage.PITCH_BEND, ShortMessage.PROGRAM_CHANGE, ShortMessage.CONTROL_CHANGE
 	};
 	
+	public static int[] PARAMETERS =
+	{
+	        0, 3, 3, 1, 1, 1, 1, 1
+	};
+	
 	@SuppressWarnings("serial")
-    private static final Map<String, Integer> TABLE = new HashMap<String, Integer>()
+	private static final Map<String, Integer> MESSAGE_TABLE = new HashMap<String, Integer>()
 	{
 		{
 			for (int i = 0; i < NAMES.length; i++)
@@ -31,10 +36,34 @@ public class MIDIMessageLookupImpl implements MIDIMessageLookup
 		}
 	};
 	
+	@SuppressWarnings("serial")
+	private static final Map<String, Integer> PARAMETERS_TABLE = new HashMap<String, Integer>()
+	{
+		{
+			for (int i = 0; i < NAMES.length; i++)
+			{
+				put(NAMES[i], PARAMETERS[i]);
+			}
+		}
+	};
+	
 	@Override
 	public int getMessage(String name)
 	{
-		return TABLE.get(name);
+		return MESSAGE_TABLE.get(name);
+	}
+	
+	@Override
+	public int getParametersCount(String name)
+	{
+		int count = 0;
+		Integer parameterCount = PARAMETERS_TABLE.get(name);
+		if (parameterCount != null)
+		{
+			count = parameterCount;
+		}
+		
+		return count;
 	}
 	
 }

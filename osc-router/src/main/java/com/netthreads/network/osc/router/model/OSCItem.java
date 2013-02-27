@@ -34,6 +34,7 @@ public class OSCItem
 	public static final int WORKING_READY = 0;
 	public static final int WORKING_BUSY = 1;
 	public static final int WORKING_DONE = 2;
+	public static final int WORKING_ERROR= 3;
 
 	public static final int STATUS_CLOSED = 0;
 	public static final int STATUS_OPEN = 1;
