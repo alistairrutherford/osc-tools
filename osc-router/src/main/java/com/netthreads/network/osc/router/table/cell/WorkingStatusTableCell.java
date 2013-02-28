@@ -18,7 +18,8 @@ public class WorkingStatusTableCell extends TableCell<OSCItem, Integer>
 {
 	private String[] ICONS =
 	{
-	        "/bullet_white.png", "/bullet_red.png", "/bullet_green.png"
+	        // Busy, Done, Error
+			"/bullet_green.png", "/bullet_white.png", "/bullet_red.png"
 	};
 	
 	private Image[] IMAGES =
@@ -56,7 +57,7 @@ public class WorkingStatusTableCell extends TableCell<OSCItem, Integer>
 				String iconName = ICONS[item];
 				
 				Image goImage = IMAGES[item];
-
+				
 				if (goImage == null)
 				{
 					

@@ -22,13 +22,13 @@ import com.google.inject.Singleton;
 public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 {
 	private Logger logger = LoggerFactory.getLogger(MIDIDeviceCacheImpl.class);
-
+	
 	private final Map<String, MidiDevice> cache;
-
+	
 	private final Map<String, Boolean> selected;
-
+	
 	private final MIDIService midiService;
-
+	
 	/**
 	 * Create cache and inject service.
 	 * 
@@ -38,14 +38,14 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	public MIDIDeviceCacheImpl(MIDIService midiService)
 	{
 		this.midiService = midiService;
-
+		
 		cache = new HashMap<String, MidiDevice>();
-
+		
 		selected = new HashMap<String, Boolean>();
-
+		
 		reload();
 	}
-
+	
 	/**
 	 * Return device from cache.
 	 * 
@@ -55,7 +55,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	{
 		return cache.get(name);
 	}
-
+	
 	/**
 	 * Add device to cache.
 	 * 
@@ -65,7 +65,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	{
 		cache.put(name, device);
 	}
-
+	
 	/**
 	 * Set device selection state.
 	 */
@@ -77,7 +77,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 			selected.put(name, state);
 		}
 	}
-
+	
 	/**
 	 * Open all selected devices.
 	 * 
@@ -86,32 +86,73 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	public void openAll()
 	{
 		Collection<String> names = cache.keySet();
-
+		
 		for (String name : names)
 		{
 			Boolean state = selected.get(name);
-
+			
 			if (state != null && state.booleanValue())
 			{
-				MidiDevice midiDevice = cache.get(name);
-
-				try
-				{
-					if (!midiDevice.isOpen())
-					{
-						midiDevice.open();
-					}
-				}
-				catch (MidiUnavailableException e)
-				{
-					// Error.
-					logger.error(e.getLocalizedMessage());
-				}
+				openDevice(name);
 			}
 		}
-
+		
 	}
-
+	
+	/**
+	 * Open Device.
+	 * 
+	 * @param name
+	 *            The device name.
+	 */
+	@Override
+	public boolean openDevice(String name)
+	{
+		boolean status = false;
+		
+		MidiDevice midiDevice = cache.get(name);
+		
+		if (midiDevice != null)
+		{
+			try
+			{
+				if (!midiDevice.isOpen())
+				{
+					midiDevice.open();
+				}
+				
+				status = true;
+			}
+			catch (MidiUnavailableException e)
+			{
+				// Error.
+				logger.error(e.getLocalizedMessage());
+			}
+		}
+		
+		return status;
+	}
+	
+	/**
+	 * Open Device.
+	 * 
+	 * @param name
+	 *            The device name.
+	 */
+	@Override
+	public void closeDevice(String name)
+	{
+		MidiDevice midiDevice = cache.get(name);
+		
+		if (midiDevice != null)
+		{
+			if (midiDevice.isOpen())
+			{
+				midiDevice.close();
+			}
+		}
+	}
+	
 	/**
 	 * Close all open devices.
 	 * 
@@ -120,7 +161,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	public void closeAll()
 	{
 		Collection<MidiDevice> devices = cache.values();
-
+		
 		for (MidiDevice midiDevice : devices)
 		{
 			if (midiDevice.isOpen())
@@ -129,7 +170,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 			}
 		}
 	}
-
+	
 	/**
 	 * Reload cache.
 	 * 
@@ -139,16 +180,16 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	{
 		// Ensure you close any open device.
 		closeAll();
-
+		
 		// Now reload.
 		List<MidiDevice> devices = midiService.getDevices();
-
+		
 		for (MidiDevice device : devices)
 		{
 			cache.put(device.getDeviceInfo().getName(), device);
 		}
 	}
-
+	
 	/**
 	 * Return cache values.
 	 * 
@@ -158,7 +199,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	{
 		return cache.values();
 	}
-
+	
 	/**
 	 * Return device names.
 	 * 
@@ -167,10 +208,10 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	public String[] getNames()
 	{
 		Object[] items = cache.keySet().toArray();
-
+		
 		String[] names = new String[items.length];
-
+		
 		return cache.keySet().toArray(names);
 	}
-
+	
 }

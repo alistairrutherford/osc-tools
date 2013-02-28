@@ -277,18 +277,19 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		// Route message to device?
 		String device = oscItem.getDevice();
 		
-		// Set status.
-		oscItem.setWorking(OSCItem.WORKING_BUSY);
-		
-		// Update view.
-		refreshView.refresh();
-		
-		int message = messageLookup.getMessage(routeType);
-		
+		// Fetch device and examine it's status.
 		MidiDevice midiDevice = midiDeviceCache.get(device);
 		
 		if (midiDevice != null && midiDevice.isOpen())
 		{
+			// Set status.
+			oscItem.setWorking(OSCItem.WORKING_BUSY);
+			
+			// Update view.
+			refreshView.refresh();
+			
+			int message = messageLookup.getMessage(routeType);
+			
 			// Send message.
 			switch (message)
 			{
@@ -310,6 +311,9 @@ public class OSCService extends Service<Void> implements OSCServerListener
 						int channelOn = Integer.valueOf(noteOnValues.get(2).getValue());
 						
 						sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
+						
+						// Set status.
+						oscItem.setWorking(OSCItem.WORKING_DONE);
 					}
 					break;
 				
@@ -327,6 +331,9 @@ public class OSCService extends Service<Void> implements OSCServerListener
 						int channelOff = Integer.valueOf(noteOffValues.get(2).getValue());
 						
 						sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
+						
+						// Set status.
+						oscItem.setWorking(OSCItem.WORKING_DONE);
 					}
 					break;
 				
@@ -349,8 +356,6 @@ public class OSCService extends Service<Void> implements OSCServerListener
 					break;
 			}
 		}
-		
-		oscItem.setWorking(OSCItem.WORKING_READY);
 		
 		// Update view.
 		refreshView.refresh();
@@ -389,11 +394,25 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	 * 
 	 */
 	@Override
-	public void handleShutdown()
+	public void handleStart()
 	{
-		setActive(false);
+		setActive(true);
 		
-		logger.info("Stopped");
+		for (OSCItem oscItem : resultCache.items())
+		{
+			String deviceName = oscItem.getDevice();
+			
+			oscItem.setStatus(OSCItem.STATUS_CLOSED);
+			
+			if (midiDeviceCache.openDevice(deviceName))
+			{
+				oscItem.setStatus(OSCItem.STATUS_OPEN);
+			}
+		}
+		
+		refreshView.refresh();
+		
+		logger.info("Started");
 	}
 	
 	/**
@@ -401,11 +420,25 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	 * 
 	 */
 	@Override
-	public void handleStart()
+	public void handleShutdown()
 	{
-		setActive(true);
+		setActive(false);
 		
-		logger.info("Started");
+		for (OSCItem oscItem : resultCache.items())
+		{
+			String deviceName = oscItem.getDevice();
+			
+			midiDeviceCache.closeDevice(deviceName);
+			
+			oscItem.setStatus(OSCItem.STATUS_CLOSED);
+			
+			oscItem.setWorking(OSCItem.WORKING_DONE);
+
+		}
+
+		refreshView.refresh();
+		
+		logger.info("Stopped");
 	}
 	
 	/**

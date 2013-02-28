@@ -1,5 +1,6 @@
 package com.netthreads.network.osc.router.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,5 +60,12 @@ public class OSCMessageCacheImpl implements OSCMessageCache
 	public void clear()
 	{
 		map.clear();
+	}
+	
+
+	@Override
+	public Collection<OSCItem> items()
+	{
+		return map.values();
 	}
 }

@@ -22,7 +22,7 @@ public interface MIDIDeviceCache
 	 * @return The device or null if not found.
 	 */
 	public MidiDevice get(String name);
-
+	
 	/**
 	 * Put device in cache.
 	 * 
@@ -31,40 +31,57 @@ public interface MIDIDeviceCache
 	 * @param device
 	 */
 	public void put(String name, MidiDevice device);
-
+	
 	/**
-	 * Set device as selected. This will mark it for opening when service activated and closed when stopped.
+	 * Set device as selected. This will mark it for opening when service
+	 * activated and closed when stopped.
 	 * 
 	 * @param name
 	 * @param state
 	 */
 	public void select(String name, boolean state);
-
+	
 	/**
 	 * Open selected devices.
 	 * 
 	 */
 	public void openAll();
-
+	
+	/**
+	 * Open Device.
+	 * 
+	 * @param name
+	 * 
+	 * @return The open status.
+	 */
+	public boolean openDevice(String name);
+	
+	/**
+	 * Close device.
+	 * 
+	 * @param name
+	 */
+	public void closeDevice(String name);
+	
 	/**
 	 * Close selected devices.
 	 * 
 	 */
 	public void closeAll();
-
+	
 	/**
 	 * Reload cache.
 	 * 
 	 */
 	public void reload();
-
+	
 	/**
 	 * Return devices.
 	 * 
 	 * @return The devices.
 	 */
 	public Collection<MidiDevice> getValues();
-
+	
 	/**
 	 * Return device names.
 	 * 

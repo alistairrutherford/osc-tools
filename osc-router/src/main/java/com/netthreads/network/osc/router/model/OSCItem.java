@@ -31,10 +31,9 @@ public class OSCItem
 	public static final int COMPLETE = 0;
 	public static final int INCOMPLETE = 1;
 	
-	public static final int WORKING_READY = 0;
-	public static final int WORKING_BUSY = 1;
-	public static final int WORKING_DONE = 2;
-	public static final int WORKING_ERROR= 3;
+	public static final int WORKING_BUSY = 0;
+	public static final int WORKING_DONE = 1;
+	public static final int WORKING_ERROR= 2;
 
 	public static final int STATUS_CLOSED = 0;
 	public static final int STATUS_OPEN = 1;
@@ -60,7 +59,7 @@ public class OSCItem
 		statusProperty = new SimpleIntegerProperty(this, ATTR_STATUS);
 		
 		addressProperty.set("");
-		workingProperty.set(WORKING_READY);
+		workingProperty.set(WORKING_DONE);
 		routeProperty.set("");
 		statusProperty.set(STATUS_CLOSED);
 		

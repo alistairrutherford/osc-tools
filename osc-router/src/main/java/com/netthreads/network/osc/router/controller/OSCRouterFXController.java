@@ -243,9 +243,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 					oscService.cancel();
 
 					activateButton.setGraphic(activateButtonStates[0]);
-
-					// TODO Close open devices.
-					midiDeviceCache.closeAll();
 				}
 				else
 				{
@@ -253,9 +250,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 
 					// Start service.
 					oscService.process(port);
-
-					// Open all devices.
-					midiDeviceCache.openAll();
 				}
 			}
 			catch (NumberFormatException e)

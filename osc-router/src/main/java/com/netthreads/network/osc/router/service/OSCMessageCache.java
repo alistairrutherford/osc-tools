@@ -1,5 +1,8 @@
 package com.netthreads.network.osc.router.service;
 
+import java.util.Collection;
+import java.util.Map;
+
 import com.google.inject.ImplementedBy;
 import com.netthreads.network.osc.router.model.OSCItem;
 
@@ -29,6 +32,13 @@ public interface OSCMessageCache
 	 *            The value.
 	 */
 	public void put(String name, OSCItem item);
+	
+	/**
+	 * Return current items.
+	 * 
+	 * @return The items.
+	 */
+	public Collection<OSCItem> items();
 	
 	/**
 	 * Clear cache.
