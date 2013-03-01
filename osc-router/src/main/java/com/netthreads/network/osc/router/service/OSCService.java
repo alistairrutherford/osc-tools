@@ -39,7 +39,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	
 	private final ObservableList<OSCItem> observableList;
 	
-	private final OSCMessageCache resultCache;
+	private final OSCMessageCache messageCache;
 	
 	private final MIDIDeviceCache midiDeviceCache;
 	
@@ -95,7 +95,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		activeProperty = new SimpleBooleanProperty();
 		
 		// Cache singleton.
-		resultCache = AppInjector.getInjector().getInstance(OSCMessageCache.class);
+		messageCache = AppInjector.getInjector().getInstance(OSCMessageCache.class);
 		
 		midiDeviceCache = AppInjector.getInjector().getInstance(MIDIDeviceCache.class);
 		
@@ -193,7 +193,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		String address = oscMessage.getAddress();
 		
 		// Look in cache for item.
-		OSCItem oscItem = resultCache.get(address);
+		OSCItem oscItem = messageCache.get(address);
 		
 		// If not found then create and entry for message and values.
 		if (oscItem == null)
@@ -223,7 +223,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		
 		observableList.add(oscItem);
 		
-		resultCache.put(address, oscItem);
+		messageCache.put(address, oscItem);
 		
 		List<Character> types = oscMessage.getTypes();
 		
@@ -282,12 +282,6 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		
 		if (midiDevice != null && midiDevice.isOpen())
 		{
-			// Set status.
-			oscItem.setWorking(OSCItem.WORKING_BUSY);
-			
-			// Update view.
-			refreshView.refresh();
-			
 			int message = messageLookup.getMessage(routeType);
 			
 			// Send message.
@@ -356,9 +350,6 @@ public class OSCService extends Service<Void> implements OSCServerListener
 					break;
 			}
 		}
-		
-		// Update view.
-		refreshView.refresh();
 	}
 	
 	/**
@@ -398,7 +389,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	{
 		setActive(true);
 		
-		for (OSCItem oscItem : resultCache.items())
+		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
 			
@@ -424,7 +415,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	{
 		setActive(false);
 		
-		for (OSCItem oscItem : resultCache.items())
+		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
 			
