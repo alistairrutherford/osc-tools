@@ -21,31 +21,31 @@ public class OSCItem
 	public static final String ATTR_ROUTE = "route";
 	public static final String ATTR_DEVICE = "device";
 	public static final String ATTR_STATUS = "status";
-	
+
 	public static final String TITLE_ADDRESS = "Address";
 	public static final String TITLE_WORKING = "~";
 	public static final String TITLE_ROUTE = "Route";
 	public static final String TITLE_DEVICE = "Device";
 	public static final String TITLE_STATUS = "Status";
-	
+
 	public static final int COMPLETE = 0;
 	public static final int INCOMPLETE = 1;
-	
+
 	public static final int WORKING_BUSY = 0;
 	public static final int WORKING_DONE = 1;
-	public static final int WORKING_ERROR= 2;
+	public static final int WORKING_ERROR = 2;
 
 	public static final int STATUS_CLOSED = 0;
 	public static final int STATUS_OPEN = 1;
-	
+
 	private StringProperty addressProperty;
 	private IntegerProperty workingProperty;
 	private StringProperty routeProperty;
 	private StringProperty deviceProperty;
 	private IntegerProperty statusProperty;
-	
+
 	private ObservableList<OSCValue> values;
-	
+
 	/**
 	 * Construct results.
 	 * 
@@ -57,15 +57,15 @@ public class OSCItem
 		routeProperty = new SimpleStringProperty(this, ATTR_ROUTE);
 		deviceProperty = new SimpleStringProperty(this, ATTR_DEVICE);
 		statusProperty = new SimpleIntegerProperty(this, ATTR_STATUS);
-		
+
 		addressProperty.set("");
 		workingProperty.set(WORKING_DONE);
 		routeProperty.set("");
 		statusProperty.set(STATUS_CLOSED);
-		
+
 		values = FXCollections.synchronizedObservableList(FXCollections.observableList(new LinkedList<OSCValue>()));
 	}
-	
+
 	/**
 	 * Message address.
 	 * 
@@ -75,7 +75,7 @@ public class OSCItem
 	{
 		return addressProperty.get();
 	}
-	
+
 	/**
 	 * Set message address.
 	 * 
@@ -85,7 +85,7 @@ public class OSCItem
 	{
 		this.addressProperty.set(address);
 	}
-	
+
 	/**
 	 * Working status.
 	 * 
@@ -95,7 +95,7 @@ public class OSCItem
 	{
 		return workingProperty.get();
 	}
-	
+
 	/**
 	 * Set working status.
 	 * 
@@ -105,7 +105,7 @@ public class OSCItem
 	{
 		this.workingProperty.set(working);
 	}
-	
+
 	/**
 	 * Return route.
 	 * 
@@ -115,7 +115,7 @@ public class OSCItem
 	{
 		return routeProperty.get();
 	}
-	
+
 	/**
 	 * Set the route value.
 	 * 
@@ -125,7 +125,7 @@ public class OSCItem
 	{
 		this.routeProperty.set(item);
 	}
-	
+
 	/**
 	 * Return device.
 	 * 
@@ -135,7 +135,7 @@ public class OSCItem
 	{
 		return deviceProperty.get();
 	}
-	
+
 	/**
 	 * Set the device value.
 	 * 
@@ -155,7 +155,7 @@ public class OSCItem
 	{
 		return statusProperty.get();
 	}
-	
+
 	/**
 	 * Set device status.
 	 * 
@@ -165,12 +165,12 @@ public class OSCItem
 	{
 		this.statusProperty.set(status);
 	}
-	
+
 	/**
 	 * Properties.
 	 * 
 	 */
-	
+
 	/**
 	 * Return property.
 	 * 
@@ -180,7 +180,7 @@ public class OSCItem
 	{
 		return addressProperty;
 	}
-	
+
 	/**
 	 * Return property.
 	 * 
@@ -190,7 +190,7 @@ public class OSCItem
 	{
 		return workingProperty;
 	}
-	
+
 	/**
 	 * Return property.
 	 * 
@@ -200,7 +200,7 @@ public class OSCItem
 	{
 		return routeProperty;
 	}
-	
+
 	/**
 	 * Return property.
 	 * 
@@ -210,7 +210,7 @@ public class OSCItem
 	{
 		return deviceProperty;
 	}
-	
+
 	/**
 	 * OSC Values
 	 * 
@@ -219,6 +219,11 @@ public class OSCItem
 	public ObservableList<OSCValue> getValues()
 	{
 		return values;
+	}
+
+	public void setValues(ObservableList<OSCValue> values)
+	{
+		this.values = values;
 	}
 
 	/**
@@ -230,5 +235,5 @@ public class OSCItem
 	{
 		return statusProperty;
 	}
-	
+
 }

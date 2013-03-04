@@ -1,7 +1,5 @@
 package com.netthreads.network.osc.router.service;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +11,7 @@ import java.util.Map;
 
 import com.google.inject.Singleton;
 import com.netthreads.network.osc.router.model.OSCItem;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * Message cache.
@@ -91,12 +90,9 @@ public class OSCMessageCacheImpl implements OSCMessageCache
 	public void serialize(String filePath) throws Exception
 	{
 		FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath));
-		
-		XMLEncoder encoder = new XMLEncoder(fileOutputStream);
-		
-		encoder.writeObject(map);
-		
-		encoder.close();
+
+		XStream xstream = new XStream();
+		xstream.toXML(map, fileOutputStream);
 	}
 	
 	/**
@@ -111,14 +107,10 @@ public class OSCMessageCacheImpl implements OSCMessageCache
     public void deserialize(String filePath) throws Exception
 	{
 		InputStream fileOutputStream = new FileInputStream(new File(filePath));
+
+		XStream xstream = new XStream();
 		
-		XMLDecoder decoder = new XMLDecoder(fileOutputStream);
-		
-		Map<String, OSCItem> cacheImpl = (Map<String, OSCItem>) decoder.readObject();
-		
-		map.putAll(cacheImpl);
-		
-		decoder.close();
+		map = (Map<String, OSCItem>)xstream.fromXML(fileOutputStream);
 	}
 	
 }
