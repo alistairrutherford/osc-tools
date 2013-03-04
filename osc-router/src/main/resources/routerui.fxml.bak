@@ -14,6 +14,12 @@
       <children>
         <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="502.0">
           <children>
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#openButtonAction" text="">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </Button>
+            <Button fx:id="saveButton" mnemonicParsing="false" text="" HBox.margin="$x1" />
             <Label text="Port">
               <HBox.margin>
                 <Insets left="10.0" right="10.0" fx:id="x1" />
@@ -24,7 +30,11 @@
                 <Insets left="10.0" right="10.0" fx:id="x1" />
               </HBox.margin>
             </TextField>
-            <Button fx:id="activateButton" alignment="CENTER" contentDisplay="CENTER" disable="false" mnemonicParsing="false" onAction="#activateButtonAction" HBox.margin="$x1" />
+            <Button fx:id="activateButton" alignment="CENTER" contentDisplay="CENTER" disable="false" mnemonicParsing="false" onAction="#activateButtonAction">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" fx:id="x1" />
+              </HBox.margin>
+            </Button>
           </children>
         </HBox>
         <SplitPane fx:id="mainSplitPane" dividerPositions="0.5936305732484076" focusTraversable="true" prefHeight="387.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">

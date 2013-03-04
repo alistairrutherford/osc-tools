@@ -1,5 +1,7 @@
 package com.netthreads.network.osc.router.service;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.Collection;
 
 import com.google.inject.ImplementedBy;
@@ -10,7 +12,7 @@ import com.netthreads.network.osc.router.model.OSCItem;
  * 
  */
 @ImplementedBy(OSCMessageCacheImpl.class)
-public interface OSCMessageCache
+public interface OSCMessageCache extends Serializable
 {
 	/**
 	 * Synchronised get from map.
@@ -43,4 +45,25 @@ public interface OSCMessageCache
 	 * Clear cache.
 	 */
 	public void clear();
+	
+	/**
+	 * Encode the contents.
+	 * 
+	 * @param filePath
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 */
+	public void serialize(String filePath) throws Exception;
+	
+	/**
+	 * Load the contents.
+	 * 
+	 * @param filePath
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 */
+	public void deserialize(String filePath) throws Exception;
+	
 }

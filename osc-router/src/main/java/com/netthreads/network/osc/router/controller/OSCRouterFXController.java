@@ -1,5 +1,6 @@
 package com.netthreads.network.osc.router.controller;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
@@ -13,6 +14,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableCell;
@@ -22,7 +25,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 import org.slf4j.Logger;
@@ -77,6 +82,8 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	@FXML
 	private SplitPane mainSplitPane;
 	
+	private FileChooser fileChooser;
+	
 	// Model list
 	private LinkedList<OSCItem> list;
 	private ObservableList<OSCItem> observableList;
@@ -101,6 +108,8 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	 */
 	public OSCRouterFXController()
 	{
+		fileChooser = new FileChooser();
+
 		// Create observable list.
 		list = new LinkedList<OSCItem>();
 		
@@ -271,6 +280,31 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	public void openButtonAction(ActionEvent event)
 	{
 		logger.debug("openButtonAction");
+		
+		Window window = getWindow(openButton);
+		
+		if (window != null)
+		{
+			File directory = fileChooser.showOpenDialog(window);
+			
+			if (directory != null)
+			{
+				try
+				{
+					oscService.load(directory.getAbsolutePath());
+					
+					refresh();
+				}
+				catch (Exception exception)
+				{
+					// Alert
+					Alert alert = new Alert(stage, ApplicationMessages.MSG_ERROR_INVALID_FILE_LOAD);
+					
+					alert.showAndWait();
+				}
+				
+			}
+		}
 	}
 	
 	/**
@@ -280,7 +314,32 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	 */
 	public void saveButtonAction(ActionEvent event)
 	{
-		logger.debug("openButtonAction");
+		logger.debug("saveButtonAction");
+		
+		Window window = getWindow(saveButton);
+		
+		if (window != null)
+		{
+			File directory = fileChooser.showSaveDialog(window);
+			
+			if (directory != null)
+			{
+				try
+				{
+					oscService.save(directory.getAbsolutePath());
+					
+					refresh();
+				}
+				catch (Exception exception)
+				{
+					// Alert
+					Alert alert = new Alert(stage, ApplicationMessages.MSG_ERROR_INVALID_FILE_LOAD);
+					
+					alert.showAndWait();
+				}
+				
+			}
+		}
 	}
 	
 	/**
@@ -555,6 +614,27 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	public synchronized void setRefreshing(boolean refreshing)
 	{
 		this.refreshing = refreshing;
+	}
+	
+	/**
+	 * Get window from node.
+	 * 
+	 * @param node
+	 * 
+	 * @return The node Window.
+	 */
+	private Window getWindow(Node node)
+	{
+		Window window = null;
+		
+		Scene scene = node.getScene();
+		
+		if (scene != null)
+		{
+			window = scene.getWindow();
+		}
+		
+		return window;
 	}
 	
 	/**

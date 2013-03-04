@@ -424,9 +424,9 @@ public class OSCService extends Service<Void> implements OSCServerListener
 			oscItem.setStatus(OSCItem.STATUS_CLOSED);
 			
 			oscItem.setWorking(OSCItem.WORKING_DONE);
-
+			
 		}
-
+		
 		refreshView.refresh();
 		
 		logger.info("Stopped");
@@ -452,4 +452,40 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		this.port = port;
 	}
 	
+	/**
+	 * Load message definitions.
+	 * 
+	 * @param filePath
+	 * 
+	 * @throws Exception
+	 */
+	public void load(String filePath) throws Exception
+	{
+		try
+		{
+			messageCache.deserialize(filePath);
+			
+			// Update view.
+			for (OSCItem oscItem : messageCache.items())
+			{
+				observableList.add(oscItem);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new Exception(e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * Save message definitions.
+	 * 
+	 * @param filePath
+	 * 
+	 * @throws Exception
+	 */
+	public void save(String filePath) throws Exception
+	{
+		messageCache.serialize(filePath);
+	}
 }

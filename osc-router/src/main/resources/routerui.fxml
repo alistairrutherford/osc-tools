@@ -14,12 +14,12 @@
       <children>
         <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="502.0">
           <children>
-            <Button fx:id="openButton" mnemonicParsing="false" text="">
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#openButtonAction" text="">
               <HBox.margin>
                 <Insets left="10.0" right="10.0" fx:id="x1" />
               </HBox.margin>
             </Button>
-            <Button fx:id="saveButton" mnemonicParsing="false" text="" HBox.margin="$x1" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonAction" text="" HBox.margin="$x1" />
             <Label text="Port">
               <HBox.margin>
                 <Insets left="10.0" right="10.0" fx:id="x1" />
