@@ -328,8 +328,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 
 		if (window != null)
 		{
-			String workingDir = workingDir();
-
 			File directory = fileChooser.showSaveDialog(window);
 
 			if (directory != null)
