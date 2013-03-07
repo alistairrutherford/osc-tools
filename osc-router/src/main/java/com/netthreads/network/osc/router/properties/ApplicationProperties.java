@@ -7,6 +7,7 @@ public interface ApplicationProperties
 {
 	public static final int DEFAULT_PORT = 9000;
 	public static final long DEFAULT_REFRESH_MSEC = 1500;
+	public static final boolean DEFAULT_LOAD_SAMPLE_FILE = true;
 
 	
 	/**
@@ -36,4 +37,9 @@ public interface ApplicationProperties
 	 * @return The max rate.
 	 */
 	public long getRefreshMsec();
+	
+	public boolean isLoadSampleFile();
+	
+	public void setLoadSampleFile(boolean loadLastFile);
+	
 }
