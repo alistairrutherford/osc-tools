@@ -221,11 +221,6 @@ public class OSCItem
 		return values;
 	}
 
-	public void setValues(ObservableList<OSCValue> values)
-	{
-		this.values = values;
-	}
-
 	/**
 	 * Return property.
 	 * 

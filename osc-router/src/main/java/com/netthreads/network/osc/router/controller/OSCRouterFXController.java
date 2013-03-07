@@ -101,8 +101,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	private ImageView[] openButtonStates;
 	private ImageView[] saveButtonStates;
 
-	private boolean refreshing;
-
 	/**
 	 * Construct controller.
 	 * 
@@ -117,7 +115,7 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 		{
 			fileChooser.setInitialDirectory(new File(workingDir));
 		}
-		
+
 		// Create observable list.
 		list = new LinkedList<OSCItem>();
 
@@ -334,6 +332,9 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 			{
 				try
 				{
+					// TODO Figure out a better way to do this.
+					valueTable.setItems(null);
+					
 					oscService.save(directory.getAbsolutePath());
 
 					refresh();
@@ -613,16 +614,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 		this.stage = stage;
 	}
 
-	public synchronized boolean isRefreshing()
-	{
-		return refreshing;
-	}
-
-	public synchronized void setRefreshing(boolean refreshing)
-	{
-		this.refreshing = refreshing;
-	}
-
 	/**
 	 * Get window from node.
 	 * 
@@ -660,15 +651,8 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 			 */
 			public void run()
 			{
-				if (!isRefreshing())
-				{
-					setRefreshing(true);
-
-					refreshDataTable(dataTable);
-					refreshValueTable(valueTable);
-
-					setRefreshing(false);
-				}
+				refreshDataTable(dataTable);
+				refreshValueTable(valueTable);
 			}
 
 			/**
@@ -686,7 +670,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 					column.setVisible(false);
 					column.setVisible(true);
 				}
-
 			}
 
 			/**

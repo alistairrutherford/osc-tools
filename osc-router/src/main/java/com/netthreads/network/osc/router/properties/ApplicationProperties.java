@@ -6,6 +6,8 @@ import com.google.inject.ImplementedBy;
 public interface ApplicationProperties
 {
 	public static final int DEFAULT_PORT = 9000;
+	public static final long DEFAULT_REFRESH_MSEC = 1500;
+
 	
 	/**
 	 * Load from local storage.
@@ -27,4 +29,11 @@ public interface ApplicationProperties
 	 * @param port
 	 */
 	public void setPort(int port);
+	
+	/**
+	 * Max UI Refresh rate.
+	 * 
+	 * @return The max rate.
+	 */
+	public long getRefreshMsec();
 }

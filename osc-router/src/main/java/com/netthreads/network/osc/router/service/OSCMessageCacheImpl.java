@@ -67,6 +67,10 @@ public class OSCMessageCacheImpl implements OSCMessageCache
 		}
 	}
 	
+	/**
+	 * Clear cache.
+	 * 
+	 */
 	@Override
 	public void clear()
 	{
