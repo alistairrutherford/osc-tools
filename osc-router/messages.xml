@@ -35,18 +35,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>59</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>note</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
@@ -54,18 +55,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>127</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>velocity</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
@@ -73,18 +75,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>1</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>channel</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
@@ -128,18 +131,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>52</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>note</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
@@ -147,18 +151,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>0</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>velocity</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
@@ -166,18 +171,19 @@
         <com.netthreads.network.osc.router.model.OSCValue>
           <typeProperty class="javafx.beans.property.SimpleStringProperty">
             <value>i</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>type</name>
           </typeProperty>
           <valueProperty class="javafx.beans.property.SimpleStringProperty">
             <value>1</value>
-            <valid>false</valid>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>value</name>
           </valueProperty>
           <labelProperty class="javafx.beans.property.SimpleStringProperty">
-            <valid>false</valid>
+            <value>channel</value>
+            <valid>true</valid>
             <bean class="com.netthreads.network.osc.router.model.OSCValue" reference="../.."/>
             <name>label</name>
           </labelProperty>
