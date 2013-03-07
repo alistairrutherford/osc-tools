@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -87,7 +88,8 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 
 	// Model list
 	private LinkedList<OSCItem> list;
-	private ObservableList<OSCItem> observableList;
+	private ObservableList<OSCItem> messageList;
+	private ObservableList<OSCValue> messageValuesList;
 
 	private OSCService oscService;
 
@@ -119,7 +121,9 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 		// Create observable list.
 		list = new LinkedList<OSCItem>();
 
-		observableList = FXCollections.synchronizedObservableList(FXCollections.observableList(list));
+		messageList = FXCollections.synchronizedObservableList(FXCollections.observableList(list));
+
+		messageValuesList = FXCollections.synchronizedObservableList(FXCollections.observableList(new LinkedList<OSCValue>()));
 
 		applicationProperties = AppInjector.getInjector().getInstance(ApplicationProperties.class);
 
@@ -215,7 +219,7 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 		testItem.setWorking(0);
 		testItem.setRoute(MIDIMessageLookupImpl.NAMES[0]);
 
-		ObservableList<OSCValue> testValues = testItem.getValues();
+		List<OSCValue> testValues = testItem.getValues();
 		for (int i = 0; i < 3; i++)
 		{
 			OSCValue value = new OSCValue();
@@ -225,7 +229,9 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 
 		list.add(testItem);
 
-		valueTable.setItems(testValues);
+		messageValuesList.addAll(testValues);
+		
+		valueTable.setItems(messageValuesList);
 	}
 
 	/**
@@ -332,9 +338,6 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 			{
 				try
 				{
-					// TODO Figure out a better way to do this.
-					valueTable.setItems(null);
-					
 					oscService.save(directory.getAbsolutePath());
 
 					refresh();
@@ -500,14 +503,16 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 		{
 			public void changed(javafx.beans.value.ObservableValue<? extends OSCItem> ov, OSCItem oldValue, OSCItem newValue)
 			{
-				valueTable.setItems(newValue.getValues());
+				messageValuesList.clear();
+				messageValuesList.addAll(newValue.getValues());
+				valueTable.setItems(messageValuesList);
 			};
 		});
 
 		// ---------------------------------------------------------------
 		// Assign list
 		// ---------------------------------------------------------------
-		dataTable.setItems(observableList);
+		dataTable.setItems(messageList);
 	}
 
 	/**
@@ -601,7 +606,7 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 	 */
 	public ObservableList<OSCItem> getObservableList()
 	{
-		return observableList;
+		return messageList;
 	}
 
 	/**

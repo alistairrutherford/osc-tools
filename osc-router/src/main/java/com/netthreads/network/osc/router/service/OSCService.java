@@ -54,7 +54,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 
 	private MIDIMessageLookup messageLookup;
 
-	private long elapsed;
+	private long elapsedMsec;
 	private long refreshMsec;
 
 	// ---------------------------------------------------------------
@@ -110,7 +110,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 
 		applicationProperties = AppInjector.getInjector().getInstance(ApplicationProperties.class);
 
-		elapsed = 0;
+		elapsedMsec = 0;
 	}
 
 	/**
@@ -224,16 +224,16 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	 */
 	private void updateView()
 	{
-		elapsed += System.currentTimeMillis();
+		elapsedMsec += System.currentTimeMillis();
 
-		if (elapsed > refreshMsec)
+		if (elapsedMsec > refreshMsec)
 		{
 			logger.debug("Refresh");
 
 			// Update view.
-			//refreshView.refresh();
+			refreshView.refresh();
 
-			elapsed = 0;
+			elapsedMsec = 0;
 		}
 
 	}
@@ -432,7 +432,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 
 		refreshView.refresh();
 
-		elapsed = 0;
+		elapsedMsec = 0;
 
 		refreshMsec = applicationProperties.getRefreshMsec();
 
@@ -462,7 +462,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 
 		refreshView.refresh();
 
-		elapsed = 0;
+		elapsedMsec = 0;
 
 		logger.info("Stopped");
 	}
