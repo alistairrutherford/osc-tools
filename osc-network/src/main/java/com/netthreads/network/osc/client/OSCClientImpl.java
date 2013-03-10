@@ -18,13 +18,13 @@ import com.netthreads.osc.common.domain.OSCEncoder;
 public class OSCClientImpl implements OSCClient
 {
 	private final OSCEncoder encoder;
-	private final Bootstrap bootstrap;
-	
+	private Bootstrap bootstrap;
+
 	private boolean connected;
-	
+
 	private InetSocketAddress socket;
 	private Channel channel;
-	
+
 	/**
 	 * OSC Client.
 	 * 
@@ -32,14 +32,12 @@ public class OSCClientImpl implements OSCClient
 	public OSCClientImpl()
 	{
 		connected = false;
-		
+
 		encoder = new OSCEncoder();
-		
-		bootstrap = new Bootstrap();
-		
+
 		channel = null;
 	}
-	
+
 	/**
 	 * Connect to OSC server.
 	 * 
@@ -48,25 +46,35 @@ public class OSCClientImpl implements OSCClient
 	@Override
 	public boolean connect(String host, int port)
 	{
+		// We are going to have to revisit this as I want to be able to reuse this.
+		bootstrap = new Bootstrap();
+
 		bootstrap.group(new NioEventLoopGroup()).channel(NioDatagramChannel.class).localAddress(new InetSocketAddress(0)).option(ChannelOption.SO_BROADCAST, true).handler(new OSCClientHandler());
-		
+
 		try
 		{
 			channel = bootstrap.bind().sync().channel();
-			
+
 			socket = new InetSocketAddress(host, port);
-			
-			connected = true;
+
+			if (socket.getAddress() != null)
+			{
+				connected = true;
+			}
+			else
+			{
+				connected = false;
+			}
 		}
 		catch (InterruptedException e)
 		{
 			connected = false;
 		}
-		
+
 		return connected;
-		
+
 	}
-	
+
 	/**
 	 * Disconnect.
 	 * 
@@ -89,38 +97,37 @@ public class OSCClientImpl implements OSCClient
 				{
 					bootstrap.shutdown();
 				}
-				
+
 				connected = false;
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * Send message.
 	 * 
-	 * Note, the future listener handles re-pooling the bundle and datagram
-	 * packet objects.
-	 *  
+	 * Note, the future listener handles re-pooling the bundle and datagram packet objects.
+	 * 
 	 * @param oscBundle
 	 */
 	@Override
 	public synchronized void send(OSCBundle oscBundle)
 	{
 		OSCBundleFutureListener oscBundleFutureListener = OSCBundleFutureListener.$(oscBundle, socket);
-		
+
 		DatagramPacket datagramPacket = oscBundleFutureListener.getDatagramPacket();
-		
+
 		encoder.encode(oscBundle, datagramPacket.data());
-		
+
 		ChannelFuture channelFuture = channel.write(datagramPacket);
-		
+
 		oscBundleFutureListener.setOscBundle(oscBundle);
-		
+
 		channelFuture.addListener(oscBundleFutureListener);
 	}
-	
+
 	/**
 	 * Return connection status.
 	 * 
