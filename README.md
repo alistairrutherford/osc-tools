@@ -22,7 +22,9 @@ You will need to follow the instruction on the plugin page to ensure JavaFX is v
 ![User interface](https://github.com/alistairrutherford/images/raw/master/oscrouterfx.png)
 
 License
--------
+--------
+[Copyright - Alistair Rutherford 2013 - www.netthreads.co.uk]
+
 Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
