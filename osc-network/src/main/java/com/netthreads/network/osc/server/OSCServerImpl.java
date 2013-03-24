@@ -59,7 +59,7 @@ public class OSCServerImpl implements OSCServer
 		}
 		catch (InterruptedException e)
 		{
-			logger.info("Interrupted");
+			logger.debug("Interrupted");
 		}
 		finally
 		{

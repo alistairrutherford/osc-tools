@@ -27,8 +27,6 @@ public class OSCClientHandler extends ChannelInboundMessageHandlerAdapter<Datagr
 	public void channelActive(ChannelHandlerContext ctx) throws Exception
 	{
 		super.channelActive(ctx);
-
-		System.out.println("Connected ");
 	}
 
 	@Override

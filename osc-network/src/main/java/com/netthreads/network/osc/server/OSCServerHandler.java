@@ -64,7 +64,7 @@ public class OSCServerHandler extends ChannelInboundMessageHandlerAdapter<Datagr
 					
 					if (oscMessage != null)
 					{
-						logger.info("Receive OSCMessage: " + oscMessage.getAddress() + ", " + oscMessage.getArguments());
+						logger.debug("Receive OSCMessage: " + oscMessage.getAddress() + ", " + oscMessage.getArguments());
 						
 						if (oscServerListener != null)
 						{
@@ -77,7 +77,7 @@ public class OSCServerHandler extends ChannelInboundMessageHandlerAdapter<Datagr
 					
 					if (oscBundle != null)
 					{
-						logger.info("Receive OSCBundle: " + oscBundle.getMessages().size());
+						logger.debug("Receive OSCBundle: " + oscBundle.getMessages().size());
 						
 						if (oscServerListener != null)
 						{

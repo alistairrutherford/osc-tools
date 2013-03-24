@@ -82,7 +82,7 @@ public class OSCBundleDecoder extends MessageToMessageDecoder<DatagramPacket, OS
 			}
 		}
 
-		logger.info(oscBundle.toString());
+		logger.debug(oscBundle.toString());
 
 		return oscBundle;
 	}
