@@ -15,12 +15,13 @@
         <name>working</name>
       </workingProperty>
       <routeProperty class="javafx.beans.property.SimpleStringProperty">
-        <value>None</value>
-        <valid>true</valid>
+        <value>Note On</value>
+        <valid>false</valid>
         <bean class="com.netthreads.network.osc.router.model.OSCItem" reference="../.."/>
         <name>route</name>
       </routeProperty>
       <deviceProperty class="javafx.beans.property.SimpleStringProperty">
+        <value>Gervill</value>
         <valid>true</valid>
         <bean class="com.netthreads.network.osc.router.model.OSCItem" reference="../.."/>
         <name>device</name>
@@ -111,12 +112,13 @@
         <name>working</name>
       </workingProperty>
       <routeProperty class="javafx.beans.property.SimpleStringProperty">
-        <value>None</value>
-        <valid>true</valid>
+        <value>Note Off</value>
+        <valid>false</valid>
         <bean class="com.netthreads.network.osc.router.model.OSCItem" reference="../.."/>
         <name>route</name>
       </routeProperty>
       <deviceProperty class="javafx.beans.property.SimpleStringProperty">
+        <value>Gervill</value>
         <valid>true</valid>
         <bean class="com.netthreads.network.osc.router.model.OSCItem" reference="../.."/>
         <name>device</name>
