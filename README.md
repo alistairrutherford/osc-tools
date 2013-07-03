@@ -1,7 +1,7 @@
 osc-tools
 =========
 
-OSC (Open Sound Control) libraries and tools written in Java
+OSC (Open Sound Control) libraries and tools written in Java. This takes a 'pooled' approach to message handling and hence is ideal for Android.
 
 osc-common 
 -----------
