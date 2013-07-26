@@ -5,6 +5,8 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ApplicationPropertiesImpl.class)
 public interface ApplicationProperties
 {
+	public static final String SAMPLE_SETTINGS = "src/main/resources/messages.xml";
+	
 	public static final int DEFAULT_PORT = 9000;
 	public static final long DEFAULT_REFRESH_MSEC = 1500;
 	public static final boolean DEFAULT_LOAD_SAMPLE_FILE = true;

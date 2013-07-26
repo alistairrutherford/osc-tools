@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import com.netthreads.network.osc.router.controller.OSCRouterFXController;
+import com.netthreads.network.osc.router.service.MIDIService;
 import com.netthreads.network.osc.router.service.OSCService;
 
 /**
@@ -27,11 +28,13 @@ public class OSCRouterFX extends Application
 	
 	public static final String ID_ROOT = "root";
 	
+	private MIDIService midiService;
 	private OSCService oscService;
 	private OSCRouterFXController oscRouterFXController;
-
+	
 	private static int DEFAULT_X = 780;
 	private static int DEFAULT_Y = 400;
+	
 	/**
 	 * Load layout and display.
 	 * 
@@ -66,6 +69,12 @@ public class OSCRouterFX extends Application
 		oscService = new OSCService(oscRouterFXController.getObservableList(), oscRouterFXController);
 		
 		// ---------------------------------------------------------------
+		// MIDI Router Service.
+		// ---------------------------------------------------------------
+		midiService = new MIDIService();
+		oscService.addRouter(midiService);
+		
+		// ---------------------------------------------------------------
 		// Controller
 		// ---------------------------------------------------------------
 		oscRouterFXController.setService(oscService);
@@ -87,9 +96,8 @@ public class OSCRouterFX extends Application
 	@Override
 	public void stop() throws Exception
 	{
-		// Kill service.
-		
-	    oscService.cancel();
+		// Kill service(s).
+		oscService.stop();
 	}
 	
 	/**

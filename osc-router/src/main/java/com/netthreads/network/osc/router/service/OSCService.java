@@ -1,5 +1,7 @@
 package com.netthreads.network.osc.router.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
@@ -7,11 +9,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.ShortMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,55 +31,65 @@ import com.netthreads.osc.common.domain.OSCPacket;
  * Present socket through which OSC messages are received and routed.
  * 
  */
-public class OSCService extends Service<Void> implements OSCServerListener
+public class OSCService extends Service<Void> implements OSCServerListener, RunStop
 {
 	private Logger logger = LoggerFactory.getLogger(OSCService.class);
-
+	
 	private final ObservableList<OSCItem> observableList;
-
+	
 	private final OSCMessageCache messageCache;
-
+	
 	private final MIDIDeviceCache midiDeviceCache;
-
+	
 	private final ImplementsRefresh refreshView;
-
+	
 	private OSCServer oscServer;
-
-	private ApplicationProperties applicationProperties;
-
+	
+	private final List<OSCRouter> routers;
+	
+	private final ApplicationProperties applicationProperties;
+	
 	private int port;
-
-	private MIDIMessageLookup messageLookup;
-
+	
 	private long elapsedMsec;
 	private long refreshMsec;
-
+	
 	// ---------------------------------------------------------------
 	// Active Property
 	// ---------------------------------------------------------------
-
+	
 	private BooleanProperty activeProperty;
-
+	
 	public BooleanProperty getActiveProperty()
 	{
 		return activeProperty;
 	}
-
+	
+	/**
+	 * Return service active status.
+	 * 
+	 * @return The active status.
+	 */
 	public boolean getActive()
 	{
 		return activeProperty.get();
 	}
-
+	
+	/**
+	 * Set service active status.
+	 * 
+	 * @param activeProperty
+	 */
 	public void setActive(boolean activeProperty)
 	{
 		this.activeProperty.set(activeProperty);
-
+		
 		if (!activeProperty)
 		{
 			oscServer.shutdown();
 		}
 	}
-
+	
 	/**
 	 * OSC Service.
 	 * 
@@ -94,25 +101,36 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	public OSCService(ObservableList<OSCItem> observableList, ImplementsRefresh refreshView)
 	{
 		this.observableList = observableList;
-
+		
 		this.refreshView = refreshView;
 
+		routers = new ArrayList<OSCRouter>();
+				
 		// Properties
 		activeProperty = new SimpleBooleanProperty();
-
+		
 		// Cache singleton.
 		messageCache = AppInjector.getInjector().getInstance(OSCMessageCache.class);
-
+		
 		midiDeviceCache = AppInjector.getInjector().getInstance(MIDIDeviceCache.class);
-
-		// MIDI Message table.
-		messageLookup = AppInjector.getInjector().getInstance(MIDIMessageLookup.class);
-
+		
 		applicationProperties = AppInjector.getInjector().getInstance(ApplicationProperties.class);
-
+		
 		elapsedMsec = 0;
+		
+		port = ApplicationProperties.DEFAULT_PORT;
 	}
-
+	
+	/**
+	 * Add a router to the list.
+	 * 
+	 * @param oscRouter
+	 */
+	public void addRouter(OSCRouter oscRouter)
+	{
+		routers.add(oscRouter);
+	}
+	
 	/**
 	 * Activate service.
 	 * 
@@ -120,19 +138,60 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	 * 
 	 * @return True if successful.
 	 */
-	public boolean process(int port)
+	@Override
+	public void run()
 	{
-		boolean status = true;
-
-		setPort(port);
-
 		reset();
-
+		
 		start();
-
-		return status;
+		
+		startRouters();
 	}
 
+	/**
+	 * Stop service.
+	 * 
+	 */
+	@Override
+	public void stop()
+	{
+	    cancel();
+	    
+		stopRouters();
+	}
+	
+	/**
+	 * Start OSC Routers.
+	 * 
+	 */
+	public void startRouters()
+	{
+		Iterator<OSCRouter> iterator = routers.iterator();
+		boolean done = false;
+		while (iterator.hasNext() && !done)
+		{
+			OSCRouter oscRouter = iterator.next();
+
+			oscRouter.start();
+		}
+	}
+
+	/**
+	 * Stop OSC Routers.
+	 * 
+	 */
+	public void stopRouters()
+	{
+		Iterator<OSCRouter> iterator = routers.iterator();
+		boolean done = false;
+		while (iterator.hasNext() && !done)
+		{
+			OSCRouter oscRouter = iterator.next();
+
+			oscRouter.stop();
+		}
+	}
+	
 	/**
 	 * Create service task.
 	 * 
@@ -141,7 +200,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	protected Task<Void> createTask()
 	{
 		final OSCService thisService = this;
-
+		
 		return new Task<Void>()
 		{
 			protected Void call()
@@ -149,7 +208,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 				try
 				{
 					oscServer = new OSCServerImpl(port, thisService);
-
+					
 					oscServer.listen();
 				}
 				catch (Exception e)
@@ -160,12 +219,22 @@ public class OSCService extends Service<Void> implements OSCServerListener
 				{
 					setActive(false);
 				}
-
+				
 				return null;
 			}
 		};
 	}
-
+	
+	/**
+	 * Handle shutdown.
+	 * 
+	 */
+	@Override
+	protected void cancelled()
+	{
+		super.cancelled();
+	}
+	
 	/**
 	 * Handle bundle.
 	 * 
@@ -174,23 +243,23 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	public void handleOSCBundle(OSCBundle oscBundle)
 	{
 		List<OSCPacket> messages = oscBundle.getMessages();
-
+		
 		for (OSCPacket oscPacket : messages)
 		{
 			if (oscPacket instanceof OSCMessage)
 			{
 				OSCMessage oscMessage = (OSCMessage) oscPacket;
-
+				
 				handleOSCMessage(oscMessage);
 			}
 			else if (oscPacket instanceof OSCBundle)
 			{
 				handleOSCBundle((OSCBundle) oscPacket);
 			}
-
+			
 		}
 	}
-
+	
 	/**
 	 * Handle message.
 	 * 
@@ -199,45 +268,67 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	public void handleOSCMessage(OSCMessage oscMessage)
 	{
 		logger.debug("Received :" + oscMessage.getAddress());
-
+		
 		String address = oscMessage.getAddress();
-
+		
 		// Look in cache for item.
 		OSCItem oscItem = messageCache.get(address);
-
+		
 		// If not found then create and entry for message and values.
 		if (oscItem == null)
 		{
 			oscItem = createOSCItem(oscMessage);
 		}
-
+		
+		// Update item values from message.
 		updateValues(oscMessage, oscItem);
 
-		routeMessage(oscItem);
-
+		// Send to router
+		route(oscItem);
+		
+		// Update UI.
 		updateView();
 	}
-
+	
 	/**
-	 * Only update the view if a set amount of msec as passed. This is to stop the UI from getting swamped with refresh
-	 * calls.
+	 * Route item.
+	 * 
+	 * TODO: Probably not a very efficient way to do this.
+	 * 
+	 * @param oscItem
+	 */
+	private void route(OSCItem oscItem)
+	{
+		// Pass off routing to provided routers.
+		Iterator<OSCRouter> iterator = routers.iterator();
+		boolean done = false;
+		while (iterator.hasNext() && !done)
+		{
+			OSCRouter oscRouter = iterator.next();
+			done = oscRouter.route(oscItem);
+		}
+	}
+	
+	/**
+	 * Only update the view if a set amount of msec as passed. This is to stop
+	 * the UI from getting swamped with refresh calls.
 	 */
 	private void updateView()
 	{
 		elapsedMsec += System.currentTimeMillis();
-
+		
 		if (elapsedMsec > refreshMsec)
 		{
 			logger.debug("Refresh");
-
+			
 			// Update view.
 			refreshView.refresh();
-
+			
 			elapsedMsec = 0;
 		}
-
+		
 	}
-
+	
 	/**
 	 * Create OSC Item from message.
 	 * 
@@ -248,30 +339,30 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	private OSCItem createOSCItem(OSCMessage oscMessage)
 	{
 		String address = oscMessage.getAddress();
-
+		
 		OSCItem oscItem = new OSCItem();
 		oscItem.setAddress(address);
 		oscItem.setRoute(MIDIMessageLookupImpl.NAMES[0]);
-
+		
 		observableList.add(oscItem);
-
+		
 		messageCache.put(address, oscItem);
-
+		
 		List<Character> types = oscMessage.getTypes();
-
+		
 		// Set up arguments holder.
 		for (int i = 0; i < types.size(); i++)
 		{
 			OSCValue oscValue = new OSCValue();
 			oscValue.setType(types.get(i).toString());
 			oscValue.setLabel(null);
-
+			
 			oscItem.getValues().add(oscValue);
 		}
-
+		
 		return oscItem;
 	}
-
+	
 	/**
 	 * Update values.
 	 * 
@@ -285,130 +376,14 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		for (int i = 0; i < arguments.size(); i++)
 		{
 			OSCValue oscValue = oscItem.getValues().get(i);
-
+			
 			// TODO: Not sure about this.
 			oscValue.setValue(arguments.get(i).toString());
 		}
-
+		
 		oscItem.setWorking(OSCItem.WORKING_DONE);
 	}
-
-	/**
-	 * Route message according to setting.
-	 * 
-	 * @param oscItem
-	 */
-	private void routeMessage(OSCItem oscItem)
-	{
-		// Route with message?
-		String routeType = oscItem.getRoute();
-
-		// Route message to device?
-		String device = oscItem.getDevice();
-
-		// Fetch device and examine it's status.
-		MidiDevice midiDevice = midiDeviceCache.get(device);
-
-		if (midiDevice != null && midiDevice.isOpen())
-		{
-			int message = messageLookup.getMessage(routeType);
-
-			// Send message.
-			switch (message)
-			{
-			case ShortMessage.CONTINUE:
-				// TODO
-				break;
-
-			case ShortMessage.NOTE_ON:
-				// Parameter check.
-				List<OSCValue> noteOnValues = oscItem.getValues();
-				if (messageLookup.getParametersCount(routeType) != noteOnValues.size())
-				{
-					oscItem.setWorking(OSCItem.WORKING_ERROR);
-				}
-				else
-				{
-					int noteOn = Integer.valueOf(noteOnValues.get(0).getValue());
-					int velocityOn = Integer.valueOf(noteOnValues.get(1).getValue());
-					int channelOn = Integer.valueOf(noteOnValues.get(2).getValue());
-
-					sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
-
-					// Set status.
-					oscItem.setWorking(OSCItem.WORKING_DONE);
-				}
-				break;
-
-			case ShortMessage.NOTE_OFF:
-				// Parameter check.
-				List<OSCValue> noteOffValues = oscItem.getValues();
-				if (messageLookup.getParametersCount(routeType) != noteOffValues.size())
-				{
-					oscItem.setWorking(OSCItem.WORKING_ERROR);
-				}
-				else
-				{
-					int noteOff = Integer.valueOf(noteOffValues.get(0).getValue());
-					int velocityOff = Integer.valueOf(noteOffValues.get(1).getValue());
-					int channelOff = Integer.valueOf(noteOffValues.get(2).getValue());
-
-					sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
-
-					// Set status.
-					oscItem.setWorking(OSCItem.WORKING_DONE);
-				}
-				break;
-
-			case ShortMessage.POLY_PRESSURE:
-				// TODO
-				break;
-			case ShortMessage.CHANNEL_PRESSURE:
-				// TODO
-				break;
-			case ShortMessage.PITCH_BEND:
-				// TODO
-				break;
-			case ShortMessage.PROGRAM_CHANGE:
-				// TODO
-				break;
-			case ShortMessage.CONTROL_CHANGE:
-				// TODO
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Send MIDI note.
-	 * 
-	 * @param note
-	 * @param velocity
-	 * @param channel
-	 * @param midiDevice
-	 */
-	private void sendNote(int command, int note, int velocity, int channel, MidiDevice midiDevice)
-	{
-		try
-		{
-			ShortMessage midiMessage = new ShortMessage();
-
-			midiMessage.setMessage(command, channel, note, velocity);
-
-			midiDevice.getReceiver().send(midiMessage, -1);
-		}
-		catch (InvalidMidiDataException e)
-		{
-			logger.error(e.getLocalizedMessage());
-		}
-		catch (MidiUnavailableException e)
-		{
-			logger.error(e.getLocalizedMessage());
-		}
-	}
-
+	
 	/**
 	 * Call back to set state.
 	 * 
@@ -417,28 +392,28 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	public void handleStart()
 	{
 		setActive(true);
-
+		
 		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
-
+			
 			oscItem.setStatus(OSCItem.STATUS_CLOSED);
-
+			
 			if (midiDeviceCache.openDevice(deviceName))
 			{
 				oscItem.setStatus(OSCItem.STATUS_OPEN);
 			}
 		}
-
+		
 		refreshView.refresh();
-
+		
 		elapsedMsec = 0;
-
+		
 		refreshMsec = applicationProperties.getRefreshMsec();
-
+		
 		logger.info("Started");
 	}
-
+	
 	/**
 	 * Call back to set state.
 	 * 
@@ -447,26 +422,26 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	public void handleShutdown()
 	{
 		setActive(false);
-
+		
 		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
-
+			
 			midiDeviceCache.closeDevice(deviceName);
-
+			
 			oscItem.setStatus(OSCItem.STATUS_CLOSED);
-
+			
 			oscItem.setWorking(OSCItem.WORKING_DONE);
-
+			
 		}
-
+		
 		refreshView.refresh();
-
+		
 		elapsedMsec = 0;
-
+		
 		logger.info("Stopped");
 	}
-
+	
 	/**
 	 * Return current port.
 	 * 
@@ -476,7 +451,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	{
 		return port;
 	}
-
+	
 	/**
 	 * Set listen port.
 	 * 
@@ -486,7 +461,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 	{
 		this.port = port;
 	}
-
+	
 	/**
 	 * Load message definitions.
 	 * 
@@ -499,7 +474,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 		try
 		{
 			messageCache.deserialize(filePath);
-
+			
 			// Update view.
 			for (OSCItem oscItem : messageCache.items())
 			{
@@ -511,7 +486,7 @@ public class OSCService extends Service<Void> implements OSCServerListener
 			throw new Exception(e.getLocalizedMessage());
 		}
 	}
-
+	
 	/**
 	 * Save message definitions.
 	 * 

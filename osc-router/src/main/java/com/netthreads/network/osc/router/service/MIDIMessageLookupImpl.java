@@ -12,12 +12,25 @@ public class MIDIMessageLookupImpl implements MIDIMessageLookup
 {
 	public static String[] NAMES =
 	{
-	        "None", "Note On", "Note Off", "Polyphonic Key Pressure", "Channel Pressure", "Pitch Bend Change", "Program Change", "Control Change"
+	        "None", 
+	        "Note On", 
+	        "Note Off", 
+	        "Polyphonic Key Pressure", 
+	        "Channel Pressure", 
+	        "Pitch Bend Change", 
+	        "Program Change", 
+	        "Control Change"
 	};
 	
 	public static int[] VALUES =
 	{
-	        ShortMessage.CONTINUE, ShortMessage.NOTE_ON, ShortMessage.NOTE_OFF, ShortMessage.POLY_PRESSURE, ShortMessage.CHANNEL_PRESSURE, ShortMessage.PITCH_BEND, ShortMessage.PROGRAM_CHANGE, ShortMessage.CONTROL_CHANGE
+	        ShortMessage.CONTINUE, 
+	        ShortMessage.NOTE_ON, 
+	        ShortMessage.NOTE_OFF, 
+	        ShortMessage.POLY_PRESSURE, 
+	        ShortMessage.CHANNEL_PRESSURE, 
+	        ShortMessage.PITCH_BEND, 
+	        ShortMessage.PROGRAM_CHANGE, ShortMessage.CONTROL_CHANGE
 	};
 	
 	public static int[] PARAMETERS =

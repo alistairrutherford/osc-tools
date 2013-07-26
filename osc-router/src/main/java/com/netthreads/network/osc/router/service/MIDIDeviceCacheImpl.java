@@ -27,7 +27,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	
 	private final Map<String, Boolean> selected;
 	
-	private final MIDIService midiService;
+	private final MIDIManager midiService;
 	
 	/**
 	 * Create cache and inject service.
@@ -35,7 +35,7 @@ public class MIDIDeviceCacheImpl implements MIDIDeviceCache
 	 * @param midiService
 	 */
 	@Inject
-	public MIDIDeviceCacheImpl(MIDIService midiService)
+	public MIDIDeviceCacheImpl(MIDIManager midiService)
 	{
 		this.midiService = midiService;
 		

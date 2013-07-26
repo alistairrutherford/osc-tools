@@ -209,7 +209,7 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 			
 			try
 			{
-				oscService.load("src/main/resources/messages.xml");
+				oscService.load(ApplicationProperties.SAMPLE_SETTINGS);
 				
 				refresh();
 			}
@@ -249,7 +249,7 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 				if (oscService.getActive())
 				{
 					// Stop service.
-					oscService.cancel();
+					oscService.stop();
 					
 					activateButton.setGraphic(activateButtonStates[0]);
 				}
@@ -257,8 +257,11 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 				{
 					activateButton.setGraphic(activateButtonStates[1]);
 					
+					// Start MIDI service.
+					
 					// Start service.
-					oscService.process(port);
+					oscService.setPort(port);
+					oscService.run();
 				}
 			}
 			catch (NumberFormatException e)

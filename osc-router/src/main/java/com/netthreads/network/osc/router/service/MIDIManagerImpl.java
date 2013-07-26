@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Singleton;
 
 @Singleton
-public class MIDIServiceImpl implements MIDIService
+public class MIDIManagerImpl implements MIDIManager
 {
-	private Logger logger = LoggerFactory.getLogger(MIDIServiceImpl.class);
+	private Logger logger = LoggerFactory.getLogger(MIDIManagerImpl.class);
 
 	/*
 	 * (non-Javadoc)
