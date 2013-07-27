@@ -19,14 +19,12 @@ import com.netthreads.network.osc.router.model.OSCItem;
 import com.netthreads.network.osc.router.model.OSCValue;
 
 /**
- * MIDI Service runs in it's own thread and send messages as fast as it can.
- * 
- * Present socket through which OSC messages are received and routed.
+ * MIDI Router runs in it's own thread and send messages as fast as it can.
  * 
  */
-public class MIDIService implements OSCRouter, Runnable
+public class MIDIRouter implements Router, Runnable
 {
-	private Logger logger = LoggerFactory.getLogger(MIDIService.class);
+	private Logger logger = LoggerFactory.getLogger(MIDIRouter.class);
 	
 	private final MIDIDeviceCache midiDeviceCache;
 	
@@ -42,7 +40,7 @@ public class MIDIService implements OSCRouter, Runnable
 	 * MIDI Service.
 	 * 
 	 */
-	public MIDIService()
+	public MIDIRouter()
 	{
 		this.queue = new ArrayBlockingQueue<OSCItem>(1024);
 		
@@ -115,7 +113,7 @@ public class MIDIService implements OSCRouter, Runnable
 		}
 		catch (InterruptedException interrupted)
 		{
-			active = false;
+			logger.debug("Stopped");
 		}
 		catch (Throwable t)
 		{

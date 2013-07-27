@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import com.netthreads.network.osc.router.controller.OSCRouterFXController;
-import com.netthreads.network.osc.router.service.MIDIService;
+import com.netthreads.network.osc.router.service.MIDIRouter;
 import com.netthreads.network.osc.router.service.OSCService;
 
 /**
@@ -28,7 +28,7 @@ public class OSCRouterFX extends Application
 	
 	public static final String ID_ROOT = "root";
 	
-	private MIDIService midiService;
+	private MIDIRouter midiService;
 	private OSCService oscService;
 	private OSCRouterFXController oscRouterFXController;
 	
@@ -71,7 +71,7 @@ public class OSCRouterFX extends Application
 		// ---------------------------------------------------------------
 		// MIDI Router Service.
 		// ---------------------------------------------------------------
-		midiService = new MIDIService();
+		midiService = new MIDIRouter();
 		oscService.addRouter(midiService);
 		
 		// ---------------------------------------------------------------

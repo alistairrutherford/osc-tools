@@ -34,37 +34,37 @@ import com.netthreads.osc.common.domain.OSCPacket;
 public class OSCService extends Service<Void> implements OSCServerListener, RunStop
 {
 	private Logger logger = LoggerFactory.getLogger(OSCService.class);
-	
+
 	private final ObservableList<OSCItem> observableList;
-	
+
 	private final OSCMessageCache messageCache;
-	
+
 	private final MIDIDeviceCache midiDeviceCache;
-	
+
 	private final ImplementsRefresh refreshView;
-	
+
 	private OSCServer oscServer;
-	
-	private final List<OSCRouter> routers;
-	
+
+	private final List<Router> routers;
+
 	private final ApplicationProperties applicationProperties;
-	
+
 	private int port;
-	
+
 	private long elapsedMsec;
 	private long refreshMsec;
-	
+
 	// ---------------------------------------------------------------
 	// Active Property
 	// ---------------------------------------------------------------
-	
+
 	private BooleanProperty activeProperty;
-	
+
 	public BooleanProperty getActiveProperty()
 	{
 		return activeProperty;
 	}
-	
+
 	/**
 	 * Return service active status.
 	 * 
@@ -74,7 +74,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	{
 		return activeProperty.get();
 	}
-	
+
 	/**
 	 * Set service active status.
 	 * 
@@ -83,13 +83,13 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void setActive(boolean activeProperty)
 	{
 		this.activeProperty.set(activeProperty);
-		
+
 		if (!activeProperty)
 		{
 			oscServer.shutdown();
 		}
 	}
-	
+
 	/**
 	 * OSC Service.
 	 * 
@@ -101,36 +101,36 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public OSCService(ObservableList<OSCItem> observableList, ImplementsRefresh refreshView)
 	{
 		this.observableList = observableList;
-		
+
 		this.refreshView = refreshView;
 
-		routers = new ArrayList<OSCRouter>();
-				
+		routers = new ArrayList<Router>();
+
 		// Properties
 		activeProperty = new SimpleBooleanProperty();
-		
+
 		// Cache singleton.
 		messageCache = AppInjector.getInjector().getInstance(OSCMessageCache.class);
-		
+
 		midiDeviceCache = AppInjector.getInjector().getInstance(MIDIDeviceCache.class);
-		
+
 		applicationProperties = AppInjector.getInjector().getInstance(ApplicationProperties.class);
-		
+
 		elapsedMsec = 0;
-		
+
 		port = ApplicationProperties.DEFAULT_PORT;
 	}
-	
+
 	/**
 	 * Add a router to the list.
 	 * 
 	 * @param oscRouter
 	 */
-	public void addRouter(OSCRouter oscRouter)
+	public void addRouter(Router oscRouter)
 	{
 		routers.add(oscRouter);
 	}
-	
+
 	/**
 	 * Activate service.
 	 * 
@@ -142,9 +142,9 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void run()
 	{
 		reset();
-		
+
 		start();
-		
+
 		startRouters();
 	}
 
@@ -155,22 +155,21 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	@Override
 	public void stop()
 	{
-	    cancel();
-	    
+		cancel();
+
 		stopRouters();
 	}
-	
+
 	/**
 	 * Start OSC Routers.
 	 * 
 	 */
 	public void startRouters()
 	{
-		Iterator<OSCRouter> iterator = routers.iterator();
-		boolean done = false;
-		while (iterator.hasNext() && !done)
+		Iterator<Router> iterator = routers.iterator();
+		while (iterator.hasNext())
 		{
-			OSCRouter oscRouter = iterator.next();
+			Router oscRouter = iterator.next();
 
 			oscRouter.start();
 		}
@@ -182,16 +181,15 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	 */
 	public void stopRouters()
 	{
-		Iterator<OSCRouter> iterator = routers.iterator();
-		boolean done = false;
-		while (iterator.hasNext() && !done)
+		Iterator<Router> iterator = routers.iterator();
+		while (iterator.hasNext())
 		{
-			OSCRouter oscRouter = iterator.next();
+			Router oscRouter = iterator.next();
 
 			oscRouter.stop();
 		}
 	}
-	
+
 	/**
 	 * Create service task.
 	 * 
@@ -200,7 +198,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	protected Task<Void> createTask()
 	{
 		final OSCService thisService = this;
-		
+
 		return new Task<Void>()
 		{
 			protected Void call()
@@ -208,7 +206,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 				try
 				{
 					oscServer = new OSCServerImpl(port, thisService);
-					
+
 					oscServer.listen();
 				}
 				catch (Exception e)
@@ -219,12 +217,12 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 				{
 					setActive(false);
 				}
-				
+
 				return null;
 			}
 		};
 	}
-	
+
 	/**
 	 * Handle shutdown.
 	 * 
@@ -234,7 +232,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	{
 		super.cancelled();
 	}
-	
+
 	/**
 	 * Handle bundle.
 	 * 
@@ -243,23 +241,23 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void handleOSCBundle(OSCBundle oscBundle)
 	{
 		List<OSCPacket> messages = oscBundle.getMessages();
-		
+
 		for (OSCPacket oscPacket : messages)
 		{
 			if (oscPacket instanceof OSCMessage)
 			{
 				OSCMessage oscMessage = (OSCMessage) oscPacket;
-				
+
 				handleOSCMessage(oscMessage);
 			}
 			else if (oscPacket instanceof OSCBundle)
 			{
 				handleOSCBundle((OSCBundle) oscPacket);
 			}
-			
+
 		}
 	}
-	
+
 	/**
 	 * Handle message.
 	 * 
@@ -268,67 +266,67 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void handleOSCMessage(OSCMessage oscMessage)
 	{
 		logger.debug("Received :" + oscMessage.getAddress());
-		
+
 		String address = oscMessage.getAddress();
-		
+
 		// Look in cache for item.
 		OSCItem oscItem = messageCache.get(address);
-		
+
 		// If not found then create and entry for message and values.
 		if (oscItem == null)
 		{
 			oscItem = createOSCItem(oscMessage);
 		}
-		
+
 		// Update item values from message.
 		updateValues(oscMessage, oscItem);
 
 		// Send to router
 		route(oscItem);
-		
+
 		// Update UI.
 		updateView();
 	}
-	
+
 	/**
 	 * Route item.
 	 * 
-	 * TODO: Probably not a very efficient way to do this.
+	 * TODO: Devise more efficient way to do this.
 	 * 
 	 * @param oscItem
 	 */
 	private void route(OSCItem oscItem)
 	{
 		// Pass off routing to provided routers.
-		Iterator<OSCRouter> iterator = routers.iterator();
+		Iterator<Router> iterator = routers.iterator();
 		boolean done = false;
 		while (iterator.hasNext() && !done)
 		{
-			OSCRouter oscRouter = iterator.next();
+			Router oscRouter = iterator.next();
 			done = oscRouter.route(oscItem);
 		}
 	}
-	
+
 	/**
-	 * Only update the view if a set amount of msec as passed. This is to stop
-	 * the UI from getting swamped with refresh calls.
+	 * Only update the view if a set amount of milliseconds as passed. This is to stop the UI from getting swamped with
+	 * refresh calls.
 	 */
 	private void updateView()
 	{
 		elapsedMsec += System.currentTimeMillis();
-		
+
 		if (elapsedMsec > refreshMsec)
 		{
 			logger.debug("Refresh");
-			
+
 			// Update view.
 			refreshView.refresh();
-			
+
 			elapsedMsec = 0;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Create OSC Item from message.
 	 * 
@@ -339,30 +337,30 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	private OSCItem createOSCItem(OSCMessage oscMessage)
 	{
 		String address = oscMessage.getAddress();
-		
+
 		OSCItem oscItem = new OSCItem();
 		oscItem.setAddress(address);
 		oscItem.setRoute(MIDIMessageLookupImpl.NAMES[0]);
-		
+
 		observableList.add(oscItem);
-		
+
 		messageCache.put(address, oscItem);
-		
+
 		List<Character> types = oscMessage.getTypes();
-		
+
 		// Set up arguments holder.
 		for (int i = 0; i < types.size(); i++)
 		{
 			OSCValue oscValue = new OSCValue();
 			oscValue.setType(types.get(i).toString());
 			oscValue.setLabel(null);
-			
+
 			oscItem.getValues().add(oscValue);
 		}
-		
+
 		return oscItem;
 	}
-	
+
 	/**
 	 * Update values.
 	 * 
@@ -376,14 +374,14 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 		for (int i = 0; i < arguments.size(); i++)
 		{
 			OSCValue oscValue = oscItem.getValues().get(i);
-			
+
 			// TODO: Not sure about this.
 			oscValue.setValue(arguments.get(i).toString());
 		}
-		
+
 		oscItem.setWorking(OSCItem.WORKING_DONE);
 	}
-	
+
 	/**
 	 * Call back to set state.
 	 * 
@@ -392,28 +390,28 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void handleStart()
 	{
 		setActive(true);
-		
+
 		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
-			
+
 			oscItem.setStatus(OSCItem.STATUS_CLOSED);
-			
+
 			if (midiDeviceCache.openDevice(deviceName))
 			{
 				oscItem.setStatus(OSCItem.STATUS_OPEN);
 			}
 		}
-		
+
 		refreshView.refresh();
-		
+
 		elapsedMsec = 0;
-		
+
 		refreshMsec = applicationProperties.getRefreshMsec();
-		
+
 		logger.info("Started");
 	}
-	
+
 	/**
 	 * Call back to set state.
 	 * 
@@ -422,26 +420,26 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	public void handleShutdown()
 	{
 		setActive(false);
-		
+
 		for (OSCItem oscItem : messageCache.items())
 		{
 			String deviceName = oscItem.getDevice();
-			
+
 			midiDeviceCache.closeDevice(deviceName);
-			
+
 			oscItem.setStatus(OSCItem.STATUS_CLOSED);
-			
+
 			oscItem.setWorking(OSCItem.WORKING_DONE);
-			
+
 		}
-		
+
 		refreshView.refresh();
-		
+
 		elapsedMsec = 0;
-		
+
 		logger.info("Stopped");
 	}
-	
+
 	/**
 	 * Return current port.
 	 * 
@@ -451,7 +449,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	{
 		return port;
 	}
-	
+
 	/**
 	 * Set listen port.
 	 * 
@@ -461,7 +459,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 	{
 		this.port = port;
 	}
-	
+
 	/**
 	 * Load message definitions.
 	 * 
@@ -474,7 +472,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 		try
 		{
 			messageCache.deserialize(filePath);
-			
+
 			// Update view.
 			for (OSCItem oscItem : messageCache.items())
 			{
@@ -486,7 +484,7 @@ public class OSCService extends Service<Void> implements OSCServerListener, RunS
 			throw new Exception(e.getLocalizedMessage());
 		}
 	}
-	
+
 	/**
 	 * Save message definitions.
 	 * 

@@ -6,7 +6,7 @@ import com.netthreads.network.osc.router.model.OSCItem;
  * OSC Message routers implement this interface.
  * 
  */
-public interface OSCRouter
+public interface Router
 {
 	public boolean route(OSCItem oscItem);
 	
