@@ -248,7 +248,10 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 				
 				if (oscService.getActive())
 				{
-					// Stop service.
+					// ---------------------------------------------------
+					// Stop OSC Service
+					// ---------------------------------------------------
+					
 					oscService.stop();
 					
 					activateButton.setGraphic(activateButtonStates[0]);
@@ -257,10 +260,14 @@ public class OSCRouterFXController implements Initializable, ImplementsRefresh
 				{
 					activateButton.setGraphic(activateButtonStates[1]);
 					
-					// Start MIDI service.
+					// ---------------------------------------------------
+					// Start OSC Service
+					// ---------------------------------------------------
+					
+					// Using this port.
+					oscService.setPort(port);
 					
 					// Start service.
-					oscService.setPort(port);
 					oscService.run();
 				}
 			}
