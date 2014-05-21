@@ -23,6 +23,14 @@ You will need to follow the instruction on the plugin page to ensure JavaFX is v
 
 ![User interface](https://github.com/alistairrutherford/images/raw/master/oscrouterfx.png)
 
+Other Examples
+--------------
+Tonome is a tone-matrix style instrument which uses these components.
+
+![Menu](https://github.com/alistairrutherford/images/raw/master/tonome1.png)
+
+You can find it here: https://github.com/alistairrutherford/tonome
+
 License
 --------
 [Copyright - Alistair Rutherford 2013 - www.netthreads.co.uk]
