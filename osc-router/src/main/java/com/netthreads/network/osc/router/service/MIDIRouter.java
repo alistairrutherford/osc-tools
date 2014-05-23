@@ -37,12 +37,12 @@ public class MIDIRouter implements Router, Runnable
 	private boolean active;
 	
 	/**
-	 * MIDI Service.
+	 * MIDI Router Service.
 	 * 
 	 */
 	public MIDIRouter()
 	{
-		this.queue = new ArrayBlockingQueue<OSCItem>(1024);
+		queue = new ArrayBlockingQueue<OSCItem>(1024);
 		
 		// Device cache.
 		midiDeviceCache = AppInjector.getInjector().getInstance(MIDIDeviceCache.class);

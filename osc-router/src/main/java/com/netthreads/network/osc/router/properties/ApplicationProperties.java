@@ -1,47 +1,70 @@
 package com.netthreads.network.osc.router.properties;
 
-import com.google.inject.ImplementedBy;
+import com.google.inject.Singleton;
 
-@ImplementedBy(ApplicationPropertiesImpl.class)
-public interface ApplicationProperties
+/**
+ * This is a work in progress.
+ * 
+ *
+ */
+@Singleton
+public class ApplicationProperties
 {
 	public static final String SAMPLE_SETTINGS = "/messages.xml";
 	
 	public static final int DEFAULT_PORT = 9000;
 	public static final long DEFAULT_REFRESH_MSEC = 1500;
 	public static final boolean DEFAULT_LOAD_SAMPLE_FILE = true;
-
+	
+	private int port;;
+	private long refreshMSec;
+	private boolean loadSampleFile;
 	
 	/**
-	 * Load from local storage.
-	 * 
-	 * @return True if successful.
+	 * Initialise default properties.
 	 */
-	public boolean load();
+	public ApplicationProperties()
+	{
+		port = DEFAULT_PORT;
+		refreshMSec = DEFAULT_REFRESH_MSEC;
+		loadSampleFile = DEFAULT_LOAD_SAMPLE_FILE;
+	}
 	
 	/**
-	 * Server port.
+	 * Load properties.
 	 * 
-	 * @return The port.
 	 */
-	public int getPort();
+	public boolean load()
+	{
+		boolean status = true;
+		
+		// TODO Implement load from disk.
+		
+		return status;
+	}
 	
-	/**
-	 * Set server port.
-	 * 
-	 * @param port
-	 */
-	public void setPort(int port);
+	public int getPort()
+	{
+		return port;
+	}
 	
-	/**
-	 * Max UI Refresh rate.
-	 * 
-	 * @return The max rate.
-	 */
-	public long getRefreshMsec();
+	public void setPort(int port)
+	{
+		this.port = port;
+	}
 	
-	public boolean isLoadSampleFile();
+	public long getRefreshMsec()
+	{
+		return refreshMSec;
+	}
 	
-	public void setLoadSampleFile(boolean loadLastFile);
+	public boolean isLoadSampleFile()
+	{
+		return loadSampleFile;
+	}
 	
+	public void setLoadSampleFile(boolean loadSampleFile)
+	{
+		this.loadSampleFile = loadSampleFile;
+	}
 }
