@@ -15,7 +15,7 @@ public class AppInjector
 	 */
 	public static Injector injector = null;
 	
-	public static Injector getInjector()
+	public static synchronized Injector getInjector()
 	{
 		if (injector == null)
 		{

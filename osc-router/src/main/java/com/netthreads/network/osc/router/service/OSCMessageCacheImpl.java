@@ -94,7 +94,7 @@ public class OSCMessageCacheImpl implements OSCMessageCache
 	public void serialize(String filePath) throws Exception
 	{
 		FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath));
-
+		
 		XStream xstream = new XStream();
 		xstream.toXML(map, fileOutputStream);
 	}
@@ -104,17 +104,38 @@ public class OSCMessageCacheImpl implements OSCMessageCache
 	 * 
 	 * @param filePath
 	 *            The file path.
+	 * @throws Exception
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
-    public void deserialize(String filePath) throws Exception
+	@SuppressWarnings({
+            "unchecked", "resource"
+    })
+	public void deserialize(String filePath) throws Exception
 	{
-		InputStream fileOutputStream = new FileInputStream(new File(filePath));
-
+		InputStream fileOutputStream = null;
+		
+		try
+		{
+			fileOutputStream = new FileInputStream(new File(filePath));
+		}
+		catch (FileNotFoundException e)
+		{
+			// Try to get from classpath
+			fileOutputStream = this.getClass().getResourceAsStream(filePath);
+			
+			if (fileOutputStream == null)
+			{
+				throw new Exception(e.getLocalizedMessage());
+			}
+			
+		}
+		
 		XStream xstream = new XStream();
 		
-		map = (Map<String, OSCItem>)xstream.fromXML(fileOutputStream);
+		map = (Map<String, OSCItem>) xstream.fromXML(fileOutputStream);
+		
+		fileOutputStream.close();
 	}
 	
 }

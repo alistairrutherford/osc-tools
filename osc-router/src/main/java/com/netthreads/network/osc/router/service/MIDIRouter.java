@@ -51,6 +51,8 @@ public class MIDIRouter implements Router, Runnable
 		messageLookup = AppInjector.getInjector().getInstance(MIDIMessageLookup.class);
 		
 		active = false;
+		
+		pool = Executors.newFixedThreadPool(1);
 	}
 	
 	/**
@@ -60,8 +62,6 @@ public class MIDIRouter implements Router, Runnable
 	@Override
 	public void start()
 	{
-		pool = Executors.newFixedThreadPool(1);
-		
 		pool.execute(this);
 	}
 	
