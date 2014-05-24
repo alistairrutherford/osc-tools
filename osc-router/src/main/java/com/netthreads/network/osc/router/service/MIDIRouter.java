@@ -25,17 +25,17 @@ import com.netthreads.network.osc.router.model.OSCValue;
 public class MIDIRouter implements Router, Runnable
 {
 	private Logger logger = LoggerFactory.getLogger(MIDIRouter.class);
-	
+
 	private final MIDIDeviceCache midiDeviceCache;
-	
+
 	private MIDIMessageLookup messageLookup;
-	
+
 	private final BlockingQueue<OSCItem> queue;
-	
+
 	private ExecutorService pool;
-	
+
 	private boolean active;
-	
+
 	/**
 	 * MIDI Router Service.
 	 * 
@@ -43,18 +43,18 @@ public class MIDIRouter implements Router, Runnable
 	public MIDIRouter()
 	{
 		queue = new ArrayBlockingQueue<OSCItem>(1024);
-		
+
 		// Device cache.
 		midiDeviceCache = AppInjector.getInjector().getInstance(MIDIDeviceCache.class);
-		
+
 		// MIDI Message table.
 		messageLookup = AppInjector.getInjector().getInstance(MIDIMessageLookup.class);
-		
+
 		active = false;
 		
-		pool = Executors.newFixedThreadPool(1);
+		pool = null;
 	}
-	
+
 	/**
 	 * Activate service.
 	 * 
@@ -62,9 +62,11 @@ public class MIDIRouter implements Router, Runnable
 	@Override
 	public void start()
 	{
+		pool = Executors.newFixedThreadPool(1);
+
 		pool.execute(this);
 	}
-	
+
 	/**
 	 * Kill the service.
 	 * 
@@ -76,9 +78,12 @@ public class MIDIRouter implements Router, Runnable
 	{
 		active = false;
 
-		pool.shutdownNow();
+		if (pool != null)
+		{
+			pool.shutdownNow();
+		}
 	}
-	
+
 	/**
 	 * Add message to queue.
 	 * 
@@ -88,10 +93,10 @@ public class MIDIRouter implements Router, Runnable
 	public synchronized boolean route(OSCItem oscItem)
 	{
 		queue.add(oscItem);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Create service task.
 	 * 
@@ -107,7 +112,7 @@ public class MIDIRouter implements Router, Runnable
 			{
 				// Listen for notes
 				OSCItem oscItem = queue.take();
-				
+
 				routeItem(oscItem);
 			}
 		}
@@ -120,7 +125,7 @@ public class MIDIRouter implements Router, Runnable
 			logger.error(t.getLocalizedMessage());
 		}
 	}
-	
+
 	/**
 	 * Route message according to setting.
 	 * 
@@ -130,85 +135,85 @@ public class MIDIRouter implements Router, Runnable
 	{
 		// Route with message?
 		String routeType = oscItem.getRoute();
-		
+
 		// Route message to device?
 		String device = oscItem.getDevice();
-		
+
 		// Fetch device and examine it's status.
 		MidiDevice midiDevice = midiDeviceCache.get(device);
-		
+
 		if (midiDevice != null && midiDevice.isOpen())
 		{
 			int message = messageLookup.getMessage(routeType);
-			
+
 			// Send message.
 			switch (message)
 			{
-				case ShortMessage.CONTINUE:
-					// TODO
-					break;
-				
-				case ShortMessage.NOTE_ON:
-					// Parameter check.
-					List<OSCValue> noteOnValues = oscItem.getValues();
-					if (messageLookup.getParametersCount(routeType) != noteOnValues.size())
-					{
-						oscItem.setWorking(OSCItem.WORKING_ERROR);
-					}
-					else
-					{
-						int noteOn = Integer.valueOf(noteOnValues.get(0).getValue());
-						int velocityOn = Integer.valueOf(noteOnValues.get(1).getValue());
-						int channelOn = Integer.valueOf(noteOnValues.get(2).getValue());
-						
-						sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
-						
-						// Set status.
-						oscItem.setWorking(OSCItem.WORKING_DONE);
-					}
-					break;
-				
-				case ShortMessage.NOTE_OFF:
-					// Parameter check.
-					List<OSCValue> noteOffValues = oscItem.getValues();
-					if (messageLookup.getParametersCount(routeType) != noteOffValues.size())
-					{
-						oscItem.setWorking(OSCItem.WORKING_ERROR);
-					}
-					else
-					{
-						int noteOff = Integer.valueOf(noteOffValues.get(0).getValue());
-						int velocityOff = Integer.valueOf(noteOffValues.get(1).getValue());
-						int channelOff = Integer.valueOf(noteOffValues.get(2).getValue());
-						
-						sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
-						
-						// Set status.
-						oscItem.setWorking(OSCItem.WORKING_DONE);
-					}
-					break;
-				
-				case ShortMessage.POLY_PRESSURE:
-					// TODO
-					break;
-				case ShortMessage.CHANNEL_PRESSURE:
-					// TODO
-					break;
-				case ShortMessage.PITCH_BEND:
-					// TODO
-					break;
-				case ShortMessage.PROGRAM_CHANGE:
-					// TODO
-					break;
-				case ShortMessage.CONTROL_CHANGE:
-					// TODO
-					break;
-				default:
-					break;
+			case ShortMessage.CONTINUE:
+				// TODO
+				break;
+
+			case ShortMessage.NOTE_ON:
+				// Parameter check.
+				List<OSCValue> noteOnValues = oscItem.getValues();
+				if (messageLookup.getParametersCount(routeType) != noteOnValues.size())
+				{
+					oscItem.setWorking(OSCItem.WORKING_ERROR);
+				}
+				else
+				{
+					int noteOn = Integer.valueOf(noteOnValues.get(0).getValue());
+					int velocityOn = Integer.valueOf(noteOnValues.get(1).getValue());
+					int channelOn = Integer.valueOf(noteOnValues.get(2).getValue());
+
+					sendNote(ShortMessage.NOTE_ON, noteOn, velocityOn, channelOn, midiDevice);
+
+					// Set status.
+					oscItem.setWorking(OSCItem.WORKING_DONE);
+				}
+				break;
+
+			case ShortMessage.NOTE_OFF:
+				// Parameter check.
+				List<OSCValue> noteOffValues = oscItem.getValues();
+				if (messageLookup.getParametersCount(routeType) != noteOffValues.size())
+				{
+					oscItem.setWorking(OSCItem.WORKING_ERROR);
+				}
+				else
+				{
+					int noteOff = Integer.valueOf(noteOffValues.get(0).getValue());
+					int velocityOff = Integer.valueOf(noteOffValues.get(1).getValue());
+					int channelOff = Integer.valueOf(noteOffValues.get(2).getValue());
+
+					sendNote(ShortMessage.NOTE_OFF, noteOff, velocityOff, channelOff, midiDevice);
+
+					// Set status.
+					oscItem.setWorking(OSCItem.WORKING_DONE);
+				}
+				break;
+
+			case ShortMessage.POLY_PRESSURE:
+				// TODO
+				break;
+			case ShortMessage.CHANNEL_PRESSURE:
+				// TODO
+				break;
+			case ShortMessage.PITCH_BEND:
+				// TODO
+				break;
+			case ShortMessage.PROGRAM_CHANGE:
+				// TODO
+				break;
+			case ShortMessage.CONTROL_CHANGE:
+				// TODO
+				break;
+			default:
+				break;
 			}
 		}
 	}
-	
+
 	/**
 	 * Send MIDI note.
 	 * 
@@ -222,9 +227,9 @@ public class MIDIRouter implements Router, Runnable
 		try
 		{
 			ShortMessage midiMessage = new ShortMessage();
-			
+
 			midiMessage.setMessage(command, channel, note, velocity);
-			
+
 			midiDevice.getReceiver().send(midiMessage, -1);
 		}
 		catch (InvalidMidiDataException e)
