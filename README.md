@@ -19,8 +19,6 @@ osc-router
 
 This is a work in progress. It uses the java-fx-maven plugin from here https://github.com/zonski/javafx-maven-plugin/wiki
 
-You will need to follow the instruction on the plugin page to ensure JavaFX is visible to the build.
-
 ![User interface](https://github.com/alistairrutherford/images/raw/master/oscrouterfx.png)
 
 Other Examples
